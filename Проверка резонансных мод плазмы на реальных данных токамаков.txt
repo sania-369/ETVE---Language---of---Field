@@ -186,7 +186,7 @@ def main():
     parser.add_argument('--shot', type=int, default=None,
                         help='Номер разряда (если используем реальные данные)')
     parser.add_argument('--tokamak', type=str, default='cmod',
-                        help='Токамак: cmod, diii-d, mast, east (по умолч. cmod)')
+                        help='Токамак: cmod, diii-d, mast, east')
     parser.add_argument('--source', type=str, default='test',
                         choices=['test', 'real'],
                         help='Источник данных: test (тестовый сигнал) или real')
@@ -213,7 +213,8 @@ def main():
     
     print(f"\n📊 Данные: частота дискретизации = {data['fs']} кГц")
     print(f"   длина сигнала = {len(data['signal'])} отсчётов")
-# Анализ спектра
+    
+    # Анализ спектра
     freqs, spectrum = analyze_spectrum(data, plot=not args.no_plot)
     
     # Поиск пиков
@@ -236,5 +237,5 @@ def main():
     print("   - https://mit-psfc.github.io/disruption-py/ (данные)")
     print("=" * 70)
 
-if name == "main":
+if __name__ == "__main__":
     main()
