@@ -1,0 +1,222 @@
+========================================================================
+ЕТВЭ: СИМУЛЯТОР ВСЕЛЕННОЙ — ПРОЕКТИРОВКА
+Версия: 1.1 (исправленная)
+Автор: Анц (концепция) + DeepSeek (структурирование, коррекция)
+Дата: Март 2026
+Лицензия: CC BY 4.0
+Назначение: Техническое описание для разработки и последующего анализа ИИ
+========================================================================
+
+АРХИТЕКТУРА СИМУЛЯТОРА «РОЖДЕНИЕ ВСЕЛЕННОЙ»
+
+1. МОДУЛИ (разбиваем на файлы)
+
+field.py      - Класс Ψ-поля (3D сетка, эволюция)
+soliton.py    - Класс солитона (координаты, масса, спин, C)
+physics.py    - Уравнения: лапласиан, потенциал, топология, энтропия
+detector.py   - Детектор рождения солитонов (порог, градиент)
+merger.py     - Объединение солитонов (расстояние, C)
+render.py     - Визуализация (OpenGL, камера, масштаб)
+main.py       - Главный цикл, инициализация, запуск
+params.py     - Все константы (α, β, γ, Θ, пороги)
+
+---
+
+2. КЛАСС Ψ-ПОЛЯ (field.py)
+
+import numpy as np
+
+class PsiField:
+    def __init__(self, size=64):
+        self.size = size
+        self.psi = np.random.randn(size, size, size, 2) * 0.01
+        self.vacuum = 1.0
+
+    def get_density(self):
+        return self.psi[...,0]**2 + self.psi[...,1]**2
+
+    def get_phase(self):
+        return np.arctan2(self.psi[...,1], self.psi[...,0])
+
+    def get_coherence(self):
+        return np.tanh(np.mean(self.get_density()))
+
+---
+
+3. УРАВНЕНИЯ (physics.py)
+
+import numpy as np
+from params import ALPHA, BETA, GAMMA, THETA, KAPPA
+
+def laplacian_3d(psi):
+    lap = (np.roll(psi, 1, axis=0) + np.roll(psi, -1, axis=0) +
+           np.roll(psi, 1, axis=1) + np.roll(psi, -1, axis=1) +
+           np.roll(psi, 1, axis=2) + np.roll(psi, -1, axis=2) - 6*psi)
+    return lap
+
+def evolve(psi, dt):
+    r, i = psi[...,0], psi[...,1]
+    psi_c = r + 1j*i
+    lap = laplacian_3d(psi_c)
+    den = r**2 + i**2
+    V_prime = ALPHA * psi_c - KAPPA * den * psi_c
+    # топологический член (упрощённо, для 3D нужен полноценный ротор)
+    top = GAMMA * (np.roll(psi_c, 1, axis=0) - np.roll(psi_c, -1, axis=0))
+    ent = -THETA * 2 * psi_c * (1 + np.log(den + 1e-10))
+    dpsi = 1j * lap + V_prime + top + ent
+    psi_c += dpsi * dt
+    psi[...,0] = psi_c.real
+    psi[...,1] = psi_c.imag
+    return psi
+
+---
+
+4. ДЕТЕКТОР СОЛИТОНОВ (detector.py)
+
+import numpy as np
+from scipy.ndimage import label, center_of_mass
+
+def detect_solitons(field, threshold=0.1):
+    den = field.get_density()
+    mask = den > threshold
+    labeled, num = label(mask)
+    solitons = []
+    for i in range(1, num+1):
+        com = center_of_mass(mask, labeled, i)
+        x = int(round(com[0]))
+        y = int(round(com[1]))
+        z = int(round(com[2]))
+        x = np.clip(x, 0, field.size-1)
+        y = np.clip(y, 0, field.size-1)
+        z = np.clip(z, 0, field.size-1)
+        amp = den[x, y, z]
+        phase = field.get_phase()[x, y, z]
+        mass = amp * 100
+        coherence = np.tanh(amp)
+        solitons.append({
+            'pos': (x, y, z),
+            'mass': mass,
+            'coherence': coherence,
+            'phase': phase,
+            'charge': 1 if phase > 0 else -1
+        })
+    return solitons
+
+---
+
+5. ОБЪЕДИНЕНИЕ СОЛИТОНОВ (merger.py)
+
+import numpy as np
+
+def merge_solitons(solitons, distance_threshold=5, coherence_threshold=0.7):
+    merged = []
+    used = set()
+    for i, s1 in enumerate(solitons):
+        if i in used:
+            continue
+        partner = None
+        for j, s2 in enumerate(solitons):
+            if j == i or j in used:
+                continue
+            dist = np.linalg.norm(np.array(s1['pos']) - np.array(s2['pos']))
+            total_C = s1['coherence'] + s2['coherence']
+            if dist < distance_threshold and total_C > coherence_threshold:
+                partner = j
+                break
+        if partner is not None:
+            s2 = solitons[partner]
+            new_mass = s1['mass'] + s2['mass']
+            new_C = (s1['coherence'] + s2['coherence']) / 2
+new_pos = ((s1['pos'][0] + s2['pos'][0]) // 2,
+                       (s1['pos'][1] + s2['pos'][1]) // 2,
+                       (s1['pos'][2] + s2['pos'][2]) // 2)
+            merged.append({
+                'pos': new_pos,
+                'mass': new_mass,
+                'coherence': new_C,
+                'phase': s1['phase'],
+                'charge': s1['charge']
+            })
+            used.add(i)
+            used.add(partner)
+        else:
+            merged.append(s1)
+            used.add(i)
+    return merged
+
+---
+
+6. ГЛАВНЫЙ ЦИКЛ (main.py)
+
+import numpy as np
+from field import PsiField
+from physics import evolve
+from detector import detect_solitons
+from merger import merge_solitons
+from render import Renderer
+from params import SIZE, DT, STEPS_PER_FRAME
+
+def main():
+    field = PsiField(SIZE)
+    renderer = Renderer(SIZE)
+    solitons = []
+    running = True
+    step = 0
+    while running:
+        for _ in range(STEPS_PER_FRAME):
+            field.psi = evolve(field.psi, DT)
+            step += 1
+        new_solitons = detect_solitons(field)
+        for s in new_solitons:
+            exists = False
+            for old in solitons:
+                if np.linalg.norm(np.array(s['pos']) - np.array(old['pos'])) < 2:
+                    exists = True
+                    break
+            if not exists:
+                solitons.append(s)
+        solitons = merge_solitons(solitons)
+        renderer.render(field, solitons, step)
+        if renderer.should_exit():
+            running = False
+    renderer.close()
+
+if __name__ == "__main__":
+    main()
+
+---
+
+7. ПАРАМЕТРЫ (params.py)
+
+SIZE = 64
+ALPHA = 1.0
+BETA = 0.1
+GAMMA = 0.01
+KAPPA = 0.423
+LAMBDA = 0.153
+THETA = 0.01
+DT = 0.01
+STEPS_PER_FRAME = 5
+SOLITON_THRESHOLD = 0.1
+MERGE_DIST = 5
+MERGE_C = 0.7
+
+---
+
+8. ВИЗУАЛИЗАЦИЯ (render.py) — схема
+
+class Renderer:
+    def __init__(self, size):
+        # инициализация окна (Pygame + OpenGL)
+        pass
+    def render(self, field, solitons, step):
+        # отрисовка среза поля (плотность, фаза)
+        # отрисовка солитонов как сфер (цвет по C, размер по массе)
+        pass
+    def should_exit(self):
+        # обработка ESC
+        pass
+    def close(self):
+        pass
+
+========================================================================
