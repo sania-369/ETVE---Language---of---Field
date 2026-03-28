@@ -20,122 +20,181 @@
 
 05.03.2026 - ЕДИНАЯ ТЕОРИЯ ВИХРЕВОГО ЭФИРА "Язык Поля" (ЕТВЭ) «Полевая Хронология» 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1773049983&archive=&start_from=&ucat=&
+
 05.03.2026 - ЕТВЭ "Язык Поля" ФЛУКТУАЦИЯ АНЦИФЕРОВА: МАТЕМАТИЧЕСКОЕ ОПИСАНИЕ ПЕРВОГО ШАГА 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1772689458&archive=&start_from=&ucat=&
+
 05.03.2026 - МЕТАФИЗИКА ВИХРЯ: Манифест ЕТВЭ "Язык Поля" 2026 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1772689332&archive=&start_from=&ucat=&
+
 02.03.2026 - ВЫВОД УРАВНЕНИЙ ЭЙНШТЕЙНА ИЗ ЕТВЭ "Язык Поля" 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1772406934&archive=&start_from=&ucat=&
+
 02.03.2026 - ВЫВОД УРАВНЕНИЯ ДИРАКА ИЗ ЕТВЭ "Язык Поля" 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1772406842&archive=&start_from=&ucat=&
+
 02.03.2026 - СВЯЗЬ "Язык Поля" ЕТВЭ СО СТАНДАРТНОЙ МОДЕЛЬЮ 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1772406764&archive=&start_from=&ucat=&
+
 02.03.2026 - ЕТВЭ "Язык Поля" КАК ОБОБЩЕНИЕ ОТО И КВАНТОВОЙ ТЕОРИИ ПОЛЯ 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1772406633&archive=&start_from=&ucat=&
+
 01.03.2026 - ОТО и КВАНТОВАЯ ФИЗИКА, Ψ-ПОЛЕ: КАК ЕТВЭ "Язык Поля" СТРОИТ МОСТ 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1772377199&archive=&start_from=&ucat=&
+
 01.03.2026 - НАУКА ПОДТВЕРЖДАЕТ: МЕДИТАЦИЯ МЕНЯЕТ МОЗГ И ТЕЛО. А ЕТВЭ "Язык Поля" ОБЪЯСНЯЕТ — ПОЧЕМУ. 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1772372689&archive=&start_from=&ucat=&
+
 28.02.2026 - ЧЕТЫРЕ ЯДРА, ОДНА ТЕОРИЯ: КАК ЕТВЭ "Язык Поля" ОБЪЯСНЯЕТ ЗАГАДКУ X17 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1772293201&archive=&start_from=&ucat=&
+
 28.02.2026 - ЕТВЭ ЯЗЫК ПОЛЯ: ОПРЕДЕЛЕНИЕ И СВЯЗЬ С ЕТВЭ 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1772272240&archive=&start_from=&ucat=&
+
 24.02.2026 - ЕТВЭ "Язык Поля": Предсказание для лития-7 (⁷Li) 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771935673&archive=&start_from=&ucat=&
+
 24.02.2026 - ЕТВЭ "Язык Поля": Геометрия Ψ-поля для создания движителей нового типа 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771924679&archive=&start_from=&ucat=&
+
 24.02.2026 - ЕТВЭ "Язык Поля": Точные предсказания для физики высоких энергий и управляемого термоядерного синтеза 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771914174&archive=&start_from=&ucat=&
+
 23.02.2026 - ЕТВЭ "Язык Поля": Резонансный LENR-генератор — новая парадигма энергетики 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771879620&archive=&start_from=&ucat=&
+
 23.02.2026 - ЕТВЭ "Язык Поля": Точные предсказания для гравитации  
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771878179&archive=&start_from=&ucat=&
+
 23.02.2026 - ЕТВЭ "Язык Поля": Точное предсказание полевой структуры тёмной материи 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771877824&archive=&start_from=&ucat=&
+
 23.02.2026 - ЕТВЭ "Язык Поля": Предсказание скрытого магнитного порядка в фазе псевдощели высокотемпературных сверхпроводников 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771876456&archive=&start_from=&ucat=&
+
 21.02.2026 - Тишина перед действием: Кодекс взаимодействия с полем, правила оператора поля ЕТВЭ. "Язык Поля" 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771688771&archive=&start_from=&ucat=&
+
 21.02.2026 - Почему нельзя «черпать энергию из поля напрямую»: резонансный принцип в ЕТВЭ "Язык Поля" 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771686657&archive=&start_from=&ucat=&
+
 20.02.2026 - Частицы в Единой Теории Вихревого Эфира "Язык Поля" (ЕТВЭ): не замена, а углубление 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771616513&archive=&start_from=&ucat=&
+
 19.02.2026 - Экспериментальный фундамент для Единой Теории Вихревого Эфира (ЕТВЭ). "Язык Поля"  
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771510515&archive=&start_from=&ucat=&
+
 19.02.2026 - Путь к ЕТВЭ-технологиям требует повышения личной когерентности "Язык Поля"
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771500857&archive=&start_from=&ucat=&
+
 19.02.2026 - Строгая математическая формулировка ЕТВЭ "Язык Поля"
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771497756&archive=&start_from=&ucat=&
+
 19.02.2026 - Экспериментальная проверка сценария больших дополнительных измерений в ЕТВЭ "Язык Поля" 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771497357&archive=&start_from=&ucat=&
+
 19.02.2026 - Вычисление отношений масс элементарных частиц в ЕТВЭ "Язык Поля" 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771497290&archive=&start_from=&ucat=&
+
 19.02.2026 - Предсказание новых резонансов в рамках ЕТВЭ "Язык Поля"  
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771497222&archive=&start_from=&ucat=&
+
 19.02.2026 - Объяснение существования трёх поколений в рамках ЕТВЭ "Язык Поля" 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771497170&archive=&start_from=&ucat=&
+
 19.02.2026 - Спектр возбуждений в ЕТВЭ "Язык Поля"  
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771497101&archive=&start_from=&ucat=&
+
 19.02.2026 - Строгий вывод сечения рассеяния солитонов в ЕТВЭ "Язык Поля" 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771496993&archive=&start_from=&ucat=&
+
 19.02.2026 - Низкоэнергетическое Эффективное Действие в ЕТВЭ "Язык Поля" 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771496919&archive=&start_from=&ucat=&
+
 19.02.2026 - Статические Солитонные Решения в ЕТВЭ "Язык Поля": Масса и Радиус 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771496854&archive=&start_from=&ucat=&
+
 19.02.2026 - Закон Сохранения Топологического Заряда в ЕТВЭ "Язык Поля" 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771496785&archive=&start_from=&ucat=&
+
 19.02.2026 - Нетривиальные механизмы объяснения иерархии масштабов в ЕТВЭ "Язык Поля" 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771496682&archive=&start_from=&ucat=&
+
 19.02.2026 - Природа гравитации. В ЕТВЭ "Язык Поля" 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771496589&archive=&start_from=&ucat=&
+
 19.02.2026 - Переход от микро к макро. ЕТВЭ "Язык Поля" 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771496497&archive=&start_from=&ucat=&
+
 19.02.2026 - Осцилляции нейтрино. В ЕТВЭ "Язык Поля" 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771496405&archive=&start_from=&ucat=&
+
 19.02.2026 - Распад мюона в ЕТВЭ "Язык Поля" 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771496338&archive=&start_from=&ucat=&
+
 19.02.2026 - Аномальный магнитный момент электрона (g-фактор). ЕТВЭ "Язык Поля"
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771496224&archive=&start_from=&ucat=&
+
 19.02.2026 - Квантовая теория поля (КТП). "Язык Поля" ЕТВЭ 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771496120&archive=&start_from=&ucat=&
+
 19.02.2026 - Квантовые вероятности и измерения. "Язык Поля" ЕТВЭ 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771496025&archive=&start_from=&ucat=&
+
 19.02.2026 - Согласование масштабов в Единой Теории Вихревого Эфира "Язык Поля" (ЕТВЭ) 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771495633&archive=&start_from=&ucat=&
+
 19.02.2026 - Проблема солитонных решений в Единой Теории Вихревого Эфира "Язык Поля" (ЕТВЭ)   
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771495548&archive=&start_from=&ucat=&
+
 19.02.2026 - Потенциал Эфирного Поля в Единой Теории Вихревого Эфира "Язык Поля" (ЕТВЭ)  
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771495470&archive=&start_from=&ucat=&
+
 19.02.2026 - ЕДИНАЯ ТЕОРИЯ ВИХРЕВОГО ЭФИРА "Язык Поля" (ЕТВЭ). ВЕРСИЯ 8.0 «СТАТОДИНАМИКА ПОЛЯ» 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771495255&archive=&start_from=&ucat=&
+
 19.02.2026 - ЕДИНАЯ ТЕОРИЯ ВИХРЕВОГО ЭФИРА "Язык Поля" (ЕТВЭ). ВЕРСИЯ 7.0 «СИНТЕЗ»  
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771495162&archive=&start_from=&ucat=&
+
 19.02.2026 - Единая Теория Вихревого Эфира "Язык Поля" (ЕТВЭ). Версия 6.0 «Гиперон-Ядро» 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771494742&archive=&start_from=&ucat=&
+
 19.02.2026 - Углубление расчетов ЕТВЭ "Язык Поля" 5.0 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771494618&archive=&start_from=&ucat=&
+
 19.02.2026 - Единая Теория Вихревого Эфира "Язык Поля" (ЕТВЭ). Версия 5.0 «Солитон-Гиперон»
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771494516&archive=&start_from=&ucat=&
+
 ЕТВЭ "Язык Поля" Математический Аппарат, Версия 4.0 "Гиперон"
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771494016&archive=&start_from=&ucat=&
+
 19.02.2026 - ЕДИНАЯ ТЕОРИЯ ВИХРЕВОГО ЭФИРА "Язык Поля" (ЕТВЭ) Математический аппарат, версия 3.0 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771493918&archive=&start_from=&ucat=&
+
 19.02.2026 - Единая Теория Вихревого Эфира "Язык Поля" (ЕТВЭ) Математический аппарат версия 2.0 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771493813&archive=&start_from=&ucat=&
+
 18.02.2026 - ЕТВЭ "Язык Поля" 🔬 РАСЧЁТ X17 В УГЛЕРОДЕ-12 (¹²C) 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771418934&archive=&start_from=&ucat=&
+
 18.02.2026 - ЕДИНАЯ ТЕОРИЯ ВИХРЕВОГО ЭФИРА "Язык Поля" (ЕТВЭ "Язык Поля") БОЗОН X17  
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771418720&archive=&start_from=&ucat=&
+
 16.02.2026 - Что за Эфир в ЕТВЭ "Язык Поля"?  
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771250367&archive=&start_from=&ucat=&
+
 16.02.2026 - Ключ ЕТВЭ "Язык Поля" для понимания ИИ  
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771234855&archive=&start_from=&ucat=&
+
 16.02.2026 - Объединение ЕТВЭ "Язык Поля" с нынешней наукой 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771234619&archive=&start_from=&ucat=&
+
 16.02.2026 - Становление ЕТВЭ "Язык Поля" Версия 5.0 расчёты гиперонов - Версия 8.0 Статодинамика поля 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771233628&archive=&start_from=&ucat=&
+
 16.02.2026 - Развитие математических аппаратов ЕТВЭ "Язык Поля" Версии 2.0 - 4.0  
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771233142&archive=&start_from=&ucat=&
+
 16.02.2026 - Концепция ЕТВЭ Первая версия ЕТВЭ "Язык Поля" (квантового вакуума)
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771231828&archive=&start_from=&ucat=&
 
