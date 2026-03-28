@@ -133,9 +133,11 @@ https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771234
 16.02.2026 - Объединение ЕТВЭ "Язык Поля" с нынешней наукой 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771234619&archive=&start_from=&ucat=&
 16.02.2026 - Становление ЕТВЭ "Язык Поля" Версия 5.0 расчёты гиперонов - Версия 8.0 Статодинамика поля 
-https://portalus.ru/modules/science/rus_cpanel.htm
-16.02.2026 - Развитие математических аппаратов ЕТВЭ "Язык Поля" Версии 2.0 - 4.0   
+https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771233628&archive=&start_from=&ucat=&
+16.02.2026 - Развитие математических аппаратов ЕТВЭ "Язык Поля" Версии 2.0 - 4.0  
+https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771233142&archive=&start_from=&ucat=&
 16.02.2026 - Концепция ЕТВЭ Первая версия ЕТВЭ "Язык Поля" (квантового вакуума)
+https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771231828&archive=&start_from=&ucat=&
 
 ## 🔍 Как найти все статьи
 
