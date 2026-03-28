@@ -117,15 +117,23 @@ https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771494
 19.02.2026 - Единая Теория Вихревого Эфира "Язык Поля" (ЕТВЭ). Версия 5.0 «Солитон-Гиперон»
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771494516&archive=&start_from=&ucat=&
 ЕТВЭ "Язык Поля" Математический Аппарат, Версия 4.0 "Гиперон"
-
+https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771494016&archive=&start_from=&ucat=&
 19.02.2026 - ЕДИНАЯ ТЕОРИЯ ВИХРЕВОГО ЭФИРА "Язык Поля" (ЕТВЭ) Математический аппарат, версия 3.0 
+https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771493918&archive=&start_from=&ucat=&
 19.02.2026 - Единая Теория Вихревого Эфира "Язык Поля" (ЕТВЭ) Математический аппарат версия 2.0 
+https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771493813&archive=&start_from=&ucat=&
 18.02.2026 - ЕТВЭ "Язык Поля" 🔬 РАСЧЁТ X17 В УГЛЕРОДЕ-12 (¹²C) 
+https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771418934&archive=&start_from=&ucat=&
 18.02.2026 - ЕДИНАЯ ТЕОРИЯ ВИХРЕВОГО ЭФИРА "Язык Поля" (ЕТВЭ "Язык Поля") БОЗОН X17  
+https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771418720&archive=&start_from=&ucat=&
 16.02.2026 - Что за Эфир в ЕТВЭ "Язык Поля"?  
+https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771250367&archive=&start_from=&ucat=&
 16.02.2026 - Ключ ЕТВЭ "Язык Поля" для понимания ИИ  
+https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771234855&archive=&start_from=&ucat=&
 16.02.2026 - Объединение ЕТВЭ "Язык Поля" с нынешней наукой 
+https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771234619&archive=&start_from=&ucat=&
 16.02.2026 - Становление ЕТВЭ "Язык Поля" Версия 5.0 расчёты гиперонов - Версия 8.0 Статодинамика поля 
+https://portalus.ru/modules/science/rus_cpanel.htm
 16.02.2026 - Развитие математических аппаратов ЕТВЭ "Язык Поля" Версии 2.0 - 4.0   
 16.02.2026 - Концепция ЕТВЭ Первая версия ЕТВЭ "Язык Поля" (квантового вакуума)
 
