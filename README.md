@@ -207,7 +207,7 @@ https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771231
 ## 🌐 Сообщества
 
 - 🔬 Научные обсуждения и новости: [ВКонтакте](https://vk.ru/club166937201) *(проверь ссылку!)*
-- 🧘 Практики и живой опыт: [Telegram](https://t.me/+pGRDVz7Iit41MDUy)
+- 🧘 Практики и живой опыт: [Telegram](https://t.me/+pGRDVz7Iit41MDUy) https://max.ru/join/4mEueTbA6nS8NR0_zf-k7FIG0K9ZSKGg5dbRWg6NsOE 
 
 ## 📜 Лицензия
 
