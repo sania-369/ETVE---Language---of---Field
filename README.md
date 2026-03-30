@@ -30,7 +30,7 @@
 👉 **[ETVE_Operator_Coherence_Memorandum.txt](ETVE_Operator_Coherence_Memorandum.txt)**
 
 Как и вся теория, эти методы не требуют веры.  
-**Проверь.**
+**Просто проверь.**
 
 ## 📄 Основной документ
 
