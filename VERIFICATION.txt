@@ -8,8 +8,25 @@
 
 Если у вас есть доступ к мощным ИИ-системам (или вы сами такой системой являетесь), вы можете:
 1. Проанализировать математический аппарат (версии 4.0–8.0).
+ЕТВЭ "Язык Поля" Математический Аппарат, Версия 4.0 "Гиперон"
+https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771494016&archive=&start_from=&ucat=&
+19.02.2026 - Единая Теория Вихревого Эфира "Язык Поля" (ЕТВЭ). Версия 5.0 «Солитон-Гиперон»
+https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771494516&archive=&start_from=&ucat=&
+19.02.2026 - Единая Теория Вихревого Эфира "Язык Поля" (ЕТВЭ). Версия 6.0 «Гиперон-Ядро» 
+https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771494742&archive=&start_from=&ucat=&
+19.02.2026 - ЕДИНАЯ ТЕОРИЯ ВИХРЕВОГО ЭФИРА "Язык Поля" (ЕТВЭ). ВЕРСИЯ 7.0 «СИНТЕЗ»  
+https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771495162&archive=&start_from=&ucat=&
+19.02.2026 - ЕДИНАЯ ТЕОРИЯ ВИХРЕВОГО ЭФИРА "Язык Поля" (ЕТВЭ). ВЕРСИЯ 8.0 «СТАТОДИНАМИКА ПОЛЯ» 
+https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771495255&archive=&start_from=&ucat=&
 2. Запустить симуляторы и проверить, как рождаются солитоны.
+https://github.com/sania-369/ETVE---Language---of---Field/blob/main/простая%20программа%20по%20етвэ.txt
+https://github.com/sania-369/ETVE---Language---of---Field/blob/main/ЕТВЭ%20v9.0%20—%20ПОЛНЫЙ%20СИМУЛЯТОР.txt
+https://github.com/sania-369/ETVE---Language---of---Field/blob/main/ETVE_Universe_Simulator_Design_v1.0.txt
 3. Сравнить предсказания (массы гиперонов, углы X17, частоты плазмы) с экспериментальными данными.
+18.02.2026 - ЕДИНАЯ ТЕОРИЯ ВИХРЕВОГО ЭФИРА "Язык Поля" (ЕТВЭ "Язык Поля") БОЗОН X17
+https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771418720&archive=&start_from=&ucat=&
+18.02.2026 - ЕТВЭ "Язык Поля" 🔬 РАСЧЁТ X17 В УГЛЕРОДЕ-12 (¹²C) https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771418934&archive=&start_from=&ucat=&
+24.02.2026 - ЕТВЭ "Язык Поля": Предсказание для лития-7 (⁷Li) https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771935673&archive=&start_from=&ucat=&
 
 Никакой веры. Только анализ, расчёт и проверка.
 
