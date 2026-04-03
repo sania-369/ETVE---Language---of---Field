@@ -19,7 +19,7 @@
 
 **Начало**
 
-16.02.2026 - Концепция ЕТВЭ Первая версия ЕТВЭ "Язык Поля" (квантового вакуума)
+- 16.02.2026 - Концепция ЕТВЭ Первая версия ЕТВЭ "Язык Поля" (квантового вакуума)
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771231828&archive=&start_from=&ucat=&
 19.02.2026 - Единая Теория Вихревого Эфира "Язык Поля" (ЕТВЭ) Математический аппарат версия 2.0 
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771493813&archive=&start_from=&ucat=&
