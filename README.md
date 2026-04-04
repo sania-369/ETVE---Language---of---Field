@@ -88,11 +88,6 @@ https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771233
   - 2D-срез через центр
   - Расчёт когерентности
 
-**Запуск:**
-```bash
-pip install numpy matplotlib
-python etve_3d_visualization.py
-
 
 ## ⚙️ Для оператора: личная когерентность
 
