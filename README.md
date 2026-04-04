@@ -81,6 +81,19 @@ https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771233
 
 - **[etve_coherence_record.py](examples/etve_coherence_record.py)** — рекордная когерентность Ψ-поля C = 0.8584, достигнутая при оптимальных параметрах (phi_scale=1.2, wave_amplitude=1.33, nonlinear=0.07). Демонстрирует предел когерентности для данной модели.
 
+## 🎨 3D-визуализация Ψ-поля
+
+- **[etve_3d_visualization.py](examples/etve_3d_visualization.py)** — готовый скрипт для генерации и визуализации Ψ-поля с когерентностью C ≈ 0.858. Показывает:
+  - 3D-изоповерхность поля
+  - 2D-срез через центр
+  - Расчёт когерентности
+
+**Запуск:**
+```bash
+pip install numpy matplotlib
+python etve_3d_visualization.py
+
+
 ## ⚙️ Для оператора: личная когерентность
 
 Эффективность работы с полевыми технологиями (LENR, плазма, двигатели) зависит от **когерентности (C)** оператора — меры внутренней согласованности его Ψ-поля.  
