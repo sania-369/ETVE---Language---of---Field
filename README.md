@@ -79,6 +79,8 @@ https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771233
 
 - **[etve_coherence_scan_results.txt](examples/etve_coherence_scan_results.txt)** — результаты сканирования когерентности Ψ-поля. Показано, как параметры (phi_scale, wave_amplitude, nonlinear, shift) влияют на C. Найден резонансный пик C = 0.817.
 
+- **[etve_coherence_record.py](examples/etve_coherence_record.py)** — рекордная когерентность Ψ-поля C = 0.8584, достигнутая при оптимальных параметрах (phi_scale=1.2, wave_amplitude=1.33, nonlinear=0.07). Демонстрирует предел когерентности для данной модели.
+
 ## ⚙️ Для оператора: личная когерентность
 
 Эффективность работы с полевыми технологиями (LENR, плазма, двигатели) зависит от **когерентности (C)** оператора — меры внутренней согласованности его Ψ-поля.  
