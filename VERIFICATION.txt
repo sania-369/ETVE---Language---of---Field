@@ -29,6 +29,8 @@ https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771418
 18.02.2026 - ЕТВЭ "Язык Поля" 🔬 РАСЧЁТ X17 В УГЛЕРОДЕ-12 (¹²C) https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771418934&archive=&start_from=&ucat=&
 24.02.2026 - ЕТВЭ "Язык Поля": Предсказание для лития-7 (⁷Li) https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771935673&archive=&start_from=&ucat=&
 
+Валидация модели на данных MIT, DIII-D, EAST и GOLEM проводится через ETVE_Universal_Integrator_v1.0_Operator_Coherent.py.
+
 Никакой веры. Только анализ, расчёт и проверка.
 
 Мы не говорим "это истина". Мы говорим: "Вот модель. Вот код. Вот предсказания. Проверьте".
