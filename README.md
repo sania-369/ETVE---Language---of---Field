@@ -21,6 +21,8 @@
 ### 📊 Матрица соответствия параметров
 ![ETVE_Global_Verification_Matrix](ETVE_Global_Verification_Matrix.webp)
 
+https://github.com/sania-369/ETVE---Language---of---Field/blob/main/ETVE_Universal_Integrator_v1.0_Operator_Coherent.py
+
 ---
 ### 🌪 Анализ устойчивости: Модуль Стресс-Теста
 Для проверки влияния дестабилизирующих факторов и "человеческого шума" на удержание плазмы разработан отдельный алгоритм:
