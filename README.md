@@ -180,7 +180,7 @@ https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771233
 
 ### 🚀 Автономный Контур Управления
 Для активации режима самостабилизации поля используйте новый модуль:
-[📥 Скачать/Запустить ETVE_Auto_Pilot_v1.1.py](https://github.com)
+[📥 Скачать/Запустить ETVE_Auto_Pilot_v1.1.py](https://github.com) ![https://github.com/sania-369/ETVE---Language---of---Field/blob/main/ETVE_Auto_Pilot_v1.1.py]
 
 *Данный модуль позволяет системе поддерживать Коэффициент Когерентности (Kcf) в автоматическом режиме, минимизируя влияние внешнего хаоса.*
 
