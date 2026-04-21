@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌀 Рождение Вселенной (ЕТВП)</title>
+    <title>🌀 Войды и Галактики (ЕТВП)</title>
     <style>
         body {
             margin: 0;
             overflow: hidden;
             font-family: 'Segoe UI', 'Arial', sans-serif;
+            background-color: black;
         }
         #info {
             position: absolute;
@@ -73,26 +74,26 @@
 </head>
 <body>
     <div id="info">
-        <h2>🌀 Рождение Вселенной (ЕТВП)</h2>
-        <p>🖱️ <strong>Клик</strong> — первичная флуктуация (рождение солитона)</p>
+        <h2>🌀 Войды и Галактики (ЕТВП)</h2>
+        <p>🖱️ <strong>Клик</strong> — создать ядро галактики</p>
         <p>⚡ <strong>ПРОБЕЛ</strong> — удерживать для повышения когерентности (C)</p>
-        <p>📊 Справа внизу — термодинамика поля</p>
+        <p>🌑 Тёмные облака — войды (отталкивают галактики)</p>
     </div>
     <div id="controls">
-        🎮 <strong>Управление камерой:</strong> Мышь — вращение | Колёсико — зум | ПКМ — панорама
+        🎮 <strong>Камера:</strong> Мышь — вращение | Колёсико — зум | ПКМ — панорама
     </div>
     <div id="thermo">
-        <div>🌀 Когерентность (C): <span id="c-value">0.00</span></div>
+        <div>🌀 Когерентность (C): <span id="c-value">0.000</span></div>
         <div>⚡ Энергия (E): <span id="e-value">0</span></div>
         <div>🔥 Энтропия (S): <span id="s-value">0</span></div>
         <div>💎 Свободная энергия (F): <span id="f-value">0</span></div>
-        <div>🌌 Солитонов: <span id="count-value">0</span></div>
+        <div>🌌 Галактик: <span id="count-value">0</span></div>
+        <div>🌑 Войдов: <span id="void-count">6</span></div>
     </div>
     <div id="status">
-        <a href="https://github.com/sania-369/ETVE---Language---of---Field" target="_blank">ЕТВП</a> · v1.0
+        <a href="https://github.com/sania-369/ETVE---Language---of---Field" target="_blank">ЕТВП</a> · v2.0 · Войды
     </div>
 
-    <!-- Карта импорта для Three.js -->
     <script type="importmap">
         {
             "imports": {
@@ -106,94 +107,59 @@
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-        // --- Инициализация сцены ---
+        // --- Сцена ---
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x050510);
+        scene.background = new THREE.Color(0x030308);
         
         // Камера
-        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(30, 20, 40);
+        const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(35, 25, 50);
         camera.lookAt(0, 0, 0);
         
         // Рендер
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setPixelR
+
+
+atio(Math.min(window.devicePixelRatio, 2));
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         document.body.appendChild(renderer.domElement);
         
-        // Управление камерой
+        // Управление
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
         controls.autoRotate = true;
-        controls.autoRotateSpeed = 0.3;
+        controls.autoRotateSpeed = 0.2;
         controls.enableZoom = true;
         controls.enablePan = true;
         controls.target.set(0, 0, 0);
         controls.maxPolarAngle = Math.PI / 1.8;
         
         // --- Освещение ---
-        scene.add(new THREE.AmbientLight(0x404060));
-        
-        const dirLight = new THREE.DirectionalLight(0xffeedd, 1.2);
-        dirLight.position.set(15, 35, 25);
+        scene.add(new THREE.AmbientLight(0x303050));
+        const dirLight = new THREE.DirectionalLight(0xffeedd, 1.0);
+        dirLight.position.set(20, 40, 30);
         dirLight.castShadow = true;
         dirLight.receiveShadow = true;
         dirLight.shadow.mapSize.width = 2048;
         dirLight.shadow.mapSize.height = 2048;
-        const d = 50;
+        const d = 60;
         dirLight.shadow.camera.left = -d;
         dirLight.shadow.camera.right = d;
         dirLight.shadow.camera.top = d;
         dirLight.shadow.camera.bottom = -d;
         dirLight.shadow.camera.near = 1;
-        dirLight.shadow.camera.far = 100;
-        dirLight.shadow.bias = -0.0005;
+        dirLight.shadow.camera.far = 120;
         scene.add(dirLight);
-        
-        const fillLight1 = new THREE.PointLight(0x4466ff, 0.5);
-        fillLight1.position.set(-20, 15, 25);
-        scene.add(fillLight1);
-        
-        const fillLight2 = new THREE.PointLight(0xff9966, 0.3);
-        fillLight2.position.set(25, 10, -30);
-        scene.add(fillLight2);
-        
-        // --- Визуализация поля (кольца) ---
-        const fieldRings = [];
-        for (let i = 0; i < 14; i++) {
-            const radius = 5 + i * 2.2;
-            const tube = 0.04 + i * 0.005;
-            const color = new THREE.Color().setHSL(0.6 + i * 0.02, 0.8, 0.4);
-            const ring = new THREE.Mesh(
-                new THREE.TorusGeometry(radius, tube, 16, 100),
-                new THREE.MeshStandardMaterial({ 
-                    color: color, 
-                    emissive: color, 
-                    emissiveIntensity: 0.2, 
-                    transparent: true, 
-                    opacity: 0.2 
-                })
-            );
-            ring.rotation.x = Math.PI / 2;
-            ring.rotation.z = i * 0.25;
-            ring.receiveShadow = false;
-            scene.add(ring);
-            fieldRings.push({ mesh: ring, baseColor: color, baseRadius: radius });
-        }
-        
-        // Сетка
-        const gridHelper = new THREE.GridHelper(80, 30, 0x88aaff, 0x334466);
-        gridHelper.position.y = -0.5;
-        scene.add(gridHelper);
         
         // Звёздный фон
         const starsGeo = new THREE.BufferGeometry();
-        const starsPos = new Float32Array(4000 * 3);
-        for (let i = 0; i < 4000 * 3; i += 3) {
-            const r = 90 + Math.random() * 200;
+        const starsPos = new Float32Array(6000 * 3);
+        for (let i = 0; i < 6000 * 3; i += 3) {
+            const r = 100 + Math.random() * 250;
             const theta = Math.random() * Math.PI * 2;
             const phi = Math.acos((Math.random() * 2) - 1);
             starsPos[i] = Math.sin(phi) * Math.cos(theta) * r;
@@ -201,221 +167,281 @@
             starsPos[i+2] = Math.cos(phi) * r;
         }
         starsGeo.setAttribute('position', new THREE.BufferAttribute(starsPos, 3));
-        scene.add(new THREE.Points(starsGeo, new THREE.PointsMaterial({color: 0xffffff, size: 0.2})));
+        scene.add(new THREE.Points(starsGeo, new THREE.PointsMaterial({color: 0xffffff, size: 0.25})));
         
-        // --- Данные симуляции ---
-        const solitons = [];
+        // --- Войды (невидимые отталкивающие сферы) ---
+        const voids = [];
+        const voidMeshes = [];
+        const voidPositions = [
+            { x: 20, y: 5, z: 15 }, { x: -18, y: -8, z: 20 }, { x: 15, y: 12, z: -22 },
+            { x: -25, y: -5, z: -15 }, { x: 10, y: -15, z: -10 }, { x: -10, y: 18, z: 18 }
+        ];
+        
+        voidPositions.forEach(pos => {
+            // Данные войда
+            voids.push({
+                pos: new THREE.Vector3(pos.x, pos.y, pos.z),
+                strength: 1.0, // Множитель силы (будет меняться от C)
+                radius: 12.0
+            });
+            
+            // Визуализация (полупрозрачное тёмное облако)
+            const cloudGeo = new THREE.SphereGeometry(12.0, 32, 16);
+            const cloudMat = new THREE.MeshPhongMaterial({
+                color: 0x1a1a2e,
+                transparent: true,
+                opacity: 0.35,
+                depthWrite: false,
+                emissive: new THREE.Color(0x111122),
+                side: THREE.DoubleSide
+            });
+            const cloud = new THREE.Mesh(cloudGeo, cloudMat);
+            cloud.position.copy(voids[voids.length-1].pos);
+            cloud.receiveShadow = false;
+            cloud.castShadow = false;
+            scene.add(cloud);
+            voidMeshes.push(cloud);
+        });
+        
+        document.getElementById('void-count').textContent = voids.length;
+        
+        // --- Данные галактик ---
+        const galaxies = [];
         let coherence = 0.0;
         
-        // Класс Солитона
-        class Soliton {
+        // Класс Ядра Галактики
+        class GalaxyCore {
             constructor(x, y, z) {
                 this.pos = new THREE.Vector3(x, y, z);
                 this.vel = new THREE.Vector3(
-                    (Math.random() - 0.5) * 0.25,
-                    (Math.random() - 0.5) * 0.25,
-                    (Math.random() - 0.5) * 0.25
+                    (Math.random() - 0.5) * 0.15,
+                    (Math.random() - 0.5) * 0.15,
+                    (Math.random() - 0.5) * 0.15
                 );
-                this.mass = 0.6 + Math.random() * 1.8;
-                this.radius = 0.55 * Math.sqrt(this.mass);
-                this.color = new THREE.Color().setHSL(0.05 + Math.random() * 0.2, 0.9, 0.55);
+                this.mass = 1.2 + Math.random() * 2.5;
+                this.radius = 0.8
+
+
+* Math.sqrt(this.mass);
+                this.color = new THREE.Color().setHSL(0.05 + Math.random() * 0.15, 0.95, 0.55);
                 
-                const geo = new THREE.SphereGeometry(this.radius, 32, 16);
-                const mat = new THREE.MeshStandardMaterial({ 
+                // Ядро
+                const coreGeo = new THREE.SphereGeometry(this.radius, 32, 16);
+                const coreMat = new THREE.MeshStandardMaterial({ 
                     color: this.color, 
                     emissive: this.color, 
-                    emissiveIntensity: 0.4,
-                    roughness: 0.3
+                    emissiveIntensity: 0.6,
+                    roughness: 0.2
                 });
-                this.mesh = new THREE.Mesh(geo, mat);
+                this.mesh = new THREE.Mesh(coreGeo, coreMat);
                 this.mesh.castShadow = true;
                 this.mesh.receiveShadow = true;
                 this.mesh.position.copy(this.pos);
                 scene.add(this.mesh);
                 
                 // Свечение
-                const glowGeo = new THREE.SphereGeometry(this.radius * 1.6, 20, 10);
+                const glowGeo = new THREE.SphereGeometry(this.radius * 2.2, 24, 12);
                 const glowMat = new THREE.MeshBasicMaterial({ 
                     color: this.color, 
                     transparent: true, 
-                    opacity: 0.15,
+                    opacity: 0.2,
                     depthWrite: false
                 });
                 this.glow = new THREE.Mesh(glowGeo, glowMat);
                 this.glow.position.copy(this.pos);
                 scene.add(this.glow);
+                
+                // Рукава (упрощённые)
+                this.arms = [];
+                const armCount = 2 + Math.floor(Math.random() * 2);
+                for (let i = 0; i < armCount; i++) {
+                    const armGroup = new THREE.Group();
+                    const points = [];
+                    for (let j = 0; j < 20; j++) {
+                        const t = j / 20;
+                        const angle = (i / armCount) * Math.PI * 2 + t * 8;
+                        const r = this.radius * 1.5 + t * this.radius * 4;
+                        points.push(new THREE.Vector3(Math.cos(angle) * r, 0, Math.sin(angle) * r));
+                    }
+                    const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
+                    const lineMat = new THREE.LineBasicMaterial({ color: this.color });
+                    const line = new THREE.Line(lineGeo, lineMat);
+                    armGroup.add(line);
+                    
+                    // Звёзды в рукаве
+                    const starGeo = new THREE.SphereGeometry(0.15, 4, 2);
+                    const starMat = new THREE.MeshStandardMaterial({ color: this.color, emissive: this.color });
+                    for (let k = 0; k < 8; k++) {
+                        const t = k / 8;
+                        const angle = (i / armCount) * Math.PI * 2 + t * 8;
+                        const r = this.radius * 2.5 + t * this.radius * 4;
+                        const star = new THREE.Mesh(starGeo, starMat);
+                        star.position.set(Math.cos(angle) * r, (Math.random()-0.5)*0.8, Math.sin(angle) * r);
+                        armGroup.add(star);
+                    }
+                    
+                    armGroup.position.copy(this.pos);
+                    armGroup.rotation.y = Math.random() * Math.PI * 2;
+                    scene.add(armGroup);
+                    this.arms.push(armGroup);
+                }
             }
             
-            update(solitonsArray, coh) {
-                // Взаимодействие с другими солитонами
-                solitonsArray.forEach(other => {
+            update(galaxiesArray, coh, voidsArray) {
+                // Гравитация между галактиками
+                galaxiesArray.forEach(other => {
                     if (other === this) return;
                     const dir = new THREE.Vector3().subVectors(other.pos, this.pos);
-                    const dist = Math.max(dir.length(), 0.01);
-                    
-                    // Гравитационное притяжение
-                    const forceMagnitude = 0.012 * this.mass * other.mass / (dist * dist);
+                    const dist = Math.max(dir.length(), 0.5);
+                    const force = 0.008 * this.mass * other.mass / (dist * dist);
                     dir.normalize();
-                    this.vel.addScaledVector(dir, forceMagnitude);
-                    
-                    // Отталкивание при столкновении
-                    const minDist = this.radius + other.radius;
-                    if (dist < minDist) {
-                        this.vel.addScaledVector(dir, -0.6);
+                    this.vel.addScaledVector(dir, force);
+                });
+                
+                // Отталкивание от войдов (зависит от C: чем выше C, тем слабее войды)
+                const voidStrength = Math.max(0.05, 1.0 - coh * 1.2);
+                voidsArray.forEach(v => {
+                    const d
+Three.Group - AI-Powered Software Development & Applications
+Three.Group - AI-Powered Software Development & Applications
+www.three.group
+
+
+ir = new THREE.Vector3().subVectors(this.pos, v.pos);
+                    const dist = Math.max(dir.length(), 0.5);
+                    if (dist < v.radius * 1.5) {
+                        dir.normalize();
+                        const force = 0.025 * v.strength * voidStrength * (1 - dist / (v.radius * 1.5));
+                        this.vel.addScaledVector(dir, force);
                     }
                 });
                 
                 // Влияние когерентности
                 if (coh > 0.2) {
-                    const friction = Math.min(0.99, 0.94 + coh * 0.05);
-                    this.vel.multiplyScalar(friction);
+                    // Трение (очень слабое, чтобы движение было медленным)
+                    const friction = 0.99 - (coh * 0.01);
+                    this.vel.multiplyScalar(Math.max(0.95, friction));
                     
-                    if (coh > 0.5) {
+                    // Притяжение к центру
+                    if (coh > 0.4) {
                         const toCenter = new THREE.Vector3(0, 0, 0).sub(this.pos);
                         const dist = toCenter.length();
-                        if (dist > 0.1) {
-                            toCenter.normalize().multiplyScalar(0.003 * (coh - 0.5) * 15);
+                        if (dist > 1.0) {
+                            const pull = 0.0015 * (coh - 0.4) * 8;
+                            toCenter.normalize().multiplyScalar(pull);
                             this.vel.add(toCenter);
                         }
                     }
-                    
-                    // Синхронизация скоростей при высокой C
-                    if (coh > 0.7) {
-                        solitonsArray.forEach(other => {
-                            if (other === this) return;
-                            const dist = this.pos.distanceTo(other.pos);
-                            if (dist < 12.0) {
-                                const alignStrength = 0.004 * (1 - dist / 12.0) * coh;
-                                this.vel.lerp(other.velocity, alignStrength);
-                            }
-                        });
-                    }
+                }
+                
+                // Ограничение максимальной скорости (медленное движение)
+                const maxSpeed = 0.25;
+                if (this.vel.length() > maxSpeed) {
+                    this.vel.normalize().multiplyScalar(maxSpeed);
                 }
                 
                 this.pos.add(this.vel);
                 
                 // Мягкие границы
-                const limit = 38;
+                const limit = 45;
                 ['x', 'y', 'z'].forEach(axis => {
                     if (Math.abs(this.pos[axis]) > limit) {
                         this.pos[axis] = Math.sign(this.pos[axis]) * limit;
-                        this.vel[axis] *= -0.5;
+                        this.vel[axis] *= -0.3;
                     }
                 });
                 
+                // Обновление визуализации
                 this.mesh.position.copy(this.pos);
                 this.glow.position.copy(this.pos);
-                // Визуальная обратная связь по C
-                const hue = 0.05 + (coh * 0.35);
-                const col = new THREE.Color().setHSL(hue, 0.9, 0.55);
+                this.arms.forEach(arm => arm.position.copy(this.pos));
+                
+                // Цвет зависит от C
+                const hue = 0.05 + (coh * 0.25);
+                const col = new THREE.Color().setHSL(hue, 0.95, 0.55);
                 this.mesh.material.color.set(col);
                 this.mesh.material.emissive.set(col);
-                this.mesh.material.emissiveIntensity = 0.3 + coh * 0.9;
+                this.mesh.material.emissiveIntensity = 0.5 + coh * 0.8;
                 this.glow.material.color.set(col);
-                this.glow.material.opacity = 0.1 + coh * 0.25;
-                this.glow.scale.setScalar(1 + coh * 0.5);
-            }
-            
-            dispose() {
-                scene.remove(this.mesh);
-                scene.remove(this.glow);
+                this.glow.material.opacity = 0.15 + coh * 0.2;
             }
         }
         
         // --- Термодинамика ---
         function updateThermo() {
             let E = 0, S = 0;
-            solitons.forEach(s => {
-                E += 0.5 * s.mass * s.vel.lengthSq();
-                const vSq = s.vel.lengthSq() + 0.001;
-                S += s.mass * Math.log(vSq);
+            galaxies.forEach(g => {
+                E += 0.5 * g.mass * g.vel.lengthSq();
+                S += g.mass * Math.log(g.vel.lengthSq() + 0.001);
             });
             S = Math.max(0, S);
-            const theta = 0.5;
-            const F = E - theta * coherence * S;
+            const F = E - 0.5 * coherence * S;
             
-            document.getElementById('c-value').textContent = coherence.toFixed(3);
+            document.getElementById('c-value').textContent = coherence.toFixed(4);
             document.getElementById('e-value').textContent = E.toFixed(2);
             document.getElementById('s-value').textContent = S.toFixed(2);
             document.getElementById('f-value').textContent = F.toFixed(2);
-            document.getElementById('count-value').textContent = solitons.length;
+            document.getElementById('count-value').textContent = galaxies.length;
         }
         
-        // --- Управление когерентностью ---
+        // Управление когерентностью
         let spacePressed = false;
-        window.addEventListener('keydown', (e) => {
-            if (e.code === 'Space') {
-                spacePressed = true;
-                e.preventDefault();
-            }
-        });
-        window.addEventListener('keyup', (e) => {
-            if (e.code === 'Space') {
-                spacePressed = false;
-                e.preventDefault();
-            }
-        });
+        window.addEventListener('keydown', e => { if (e.code === 'Space') { spacePressed = true; e.preventDefault(); } });
+        window.addEventListener('keyup', e => { if (e.code === 'Space') { spacePressed = false; e.preventDefault(); } });
         
-        // --- Создание солитона по клику ---
-        renderer.domElement.addEventListener('click', (event) => {
+        // Создание галактики по клику
+        renderer.domElement.addEventListener('click', e => {
             const rect = renderer.domElement.getBoundingClientRect();
             const mouse = new THREE.Vector2(
-                ((event.clientX - rect.left) / rect.width) * 2 - 1,
-                -((event.clientY - rect.top) / rect.height) * 2 + 1
+                ((e.clien
+
+
+tX - rect.left) / rect.width) * 2 - 1,
+                -((e.clientY - rect.top) / rect.height) * 2 + 1
             );
             const raycaster = new THREE.Raycaster();
             raycaster.setFromCamera(mouse, camera);
             const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
             const target = new THREE.Vector3();
             if (raycaster.ray.intersectPlane(plane, target)) {
-                target.y = (Math.random() - 0.5) * 6;
-                solitons.push(new Soliton(target.x, target.y, target.z));
-                controls.autoRotate = true;
+                target.y = (Math.random() - 0.5) * 8;
+                galaxies.push(new GalaxyCore(target.x, target.y, target.z));
             }
         });
         
-        // Стартовые солитоны
-        for (let i = 0; i < 10; i++) {
-            const angle = (i / 10) * Math.PI * 2;
-            const radius = 9;
-            solitons.push(new Soliton(
+        // Стартовые галактики
+        for (let i = 0; i < 8; i++) {
+            const angle = (i / 8) * Math.PI * 2;
+            const radius = 12 + Math.random() * 8;
+            galaxies.push(new GalaxyCore(
                 Math.cos(angle) * radius,
-                (Math.random() - 0.5) * 4,
+                (Math.random() - 0.5) * 10,
                 Math.sin(angle) * radius
             ));
         }
         
-        // --- Анимация ---
+        // Анимация
         function animate() {
             requestAnimationFrame(animate);
             
-            // Обновление когерентности
-            if (spacePressed) {
-                coherence = Math.min(1.0, coherence + 0.006);
-            } else {
-                coherence = Math.max(0.0, coherence - 0.003);
-            }
+            if (spacePressed) coherence = Math.min(0.99999, coherence + 0.002);
+            else coherence = Math.max(0.0, coherence - 0.001);
             
-            // Визуализация поля
-            scene.background.setHSL(0.66, 0.8, 0.03 + coherence * 0.1);
-            fieldRings.forEach((item, idx) => {
-                item.mesh.material.emissiveIntensity = 0.15 + coherence * 0.5;
-                item.mesh.material.opacity = 0.15 + coherence * 0.15;
-                item.mesh.scale.setScalar(1 + coherence * 0.08 * Math.sin(idx * 0.7));
+            // Визуализация войдов (меняют прозрачность от C)
+            voidMeshes.forEach((mesh, idx) => {
+                mesh.material.opacity = 0.35 * (1 - coherence * 0.8);
+                mesh.material.emissiveIntensity = 0.1 * (1 - coherence);
             });
-            // Обновление солитонов
-            solitons.forEach(s => s.update(solitons, coherence));
             
-            // Термодинамика
+            // Обновление галактик
+            galaxies.forEach(g => g.update(galaxies, coherence, voids));
             updateThermo();
             
             controls.update();
             renderer.render(scene, camera);
         }
-        
         animate();
         
-        // --- Ресайз ---
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
