@@ -5,10 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>⚡ LENR Симулятор (ЕТВП)</title>
     <style>
-        body { margin: 0; overflow: hidden; background: black; font-family: 'Segoe UI', sans-serif; }
+        body { margin: 0; overflow: hidden; background: #0a0a14; font-family: 'Segoe UI', sans-serif; }
         #info {
             position: absolute; top: 20px; left: 20px; color: white;
-            background: rgba(0,0,0,0.6); padding: 15px; border-radius: 8px;
+            background: rgba(0,0,0,0.7); padding: 15px 25px; border-radius: 8px;
+            pointer-events: none; z-index: 10;
+        }
+        #controls {
+            position: absolute; bottom: 30px; left: 20px; color: #ccc;
+            background: rgba(0,0,0,0.6); padding: 12px 20px; border-radius: 8px;
             pointer-events: none; z-index: 10;
         }
     </style>
@@ -18,6 +23,9 @@
         <h2>⚡ LENR: Резонансная накачка (ЕТВП)</h2>
         <p>🖱️ Клик — добавить ион водорода</p>
         <p>⚡ ПРОБЕЛ — включить резонанс (3.5 ТГц)</p>
+    </div>
+    <div id="controls">
+        🎮 Мышь — вращение | Колёсико — зум
     </div>
 
     <script type="importmap">
@@ -33,9 +41,9 @@
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-        // Сцена
+        // --- Сцена ---
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x111122);
+        scene.background = new THREE.Color(0x0a0a14);
         
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.set(8, 6, 12);
@@ -48,51 +56,66 @@
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.autoRotate = true;
-        controls.autoRotateSpeed = 0.5;
+        controls.autoRotateSpeed = 0.8;
+        controls.enableZoom = true;
         controls.target.set(0, 0, 0);
         
-        // Свет
+        // --- Свет ---
         scene.add(new THREE.AmbientLight(0x404060));
-        const light = new THREE.PointLight(0xffaa88, 1);
-        light.position.set(5, 10, 7);
-        scene.add(light);
+        const light1 = new THREE.PointLight(0xffaa88, 1.2);
+        light1.position.set(5, 10, 7);
+        scene.add(light1);
+        const light2 = new THREE.PointLight(0x88aaff, 0.6);
+        light2.position.set(-5, 3, -8);
+        scene.add(light2);
         
-        // Решётка никеля (кубическая, упрощённая)
-        const lattice = [];
+        // --- Решётка никеля (кубическая) ---
+        const atoms = [];
         const spacing = 1.2;
+        const atomMaterial = new THREE.MeshStandardMaterial({ 
+            color: 0x88aacc, 
+            emissive: 0x224466, 
+            emissiveIntensity: 0.4,
+            roughness: 0.3,
+            metalness: 0.1
+        });
+        
         for (let i = -2; i <= 2; i++) {
             for (let j = -2; j <= 2; j++) {
                 for (let k = -2; k <= 2; k++) {
-                    const atom = new THREE.Mesh(
-                        new THREE.SphereGeometry(0.15, 8, 4),
-                        new THREE.MeshStandardMaterial({ color: 0x88aacc, emissive: 0x224466, emissiveIntensity: 0.3 })
-                    );
+                    const atom = new THREE.Mesh(new THREE.SphereGeometry(0.18, 16, 8), atomMaterial);
                     atom.position.set(i * spacing, j * spacing, k * spacing);
                     scene.add(atom);
-                    lattice.push(atom);
+                    atoms.push(atom);
                 }
             }
         }
         
-        // Ионы водорода
+        // --- Ионы водорода ---
         const ions = [];
+        const ionMaterial = new THREE.MeshStandardMaterial({ 
+            color: 0xffaa00, 
+            emissive: 0x553300, 
+            emissiveIntensity: 0.6 
+        });
         
         function addIon(x, y, z) {
-            const ion = new THREE.Mesh(
-                new THREE.SphereGeometry(0.2, 16, 8),
-                new THREE.MeshStandardMaterial({ color: 0xffaa00, emissive: 0x442200 })
-            );
+            const ion = new THREE.Mesh(new THREE.SphereGeometry(0.22, 16, 8), ionMaterial.clone());
             ion.position.set(x, y, z);
             scene.add(ion);
             ions.push(ion);
         }
         
-        // Клик для добавления иона
-        renderer.domElement.addEventListener('click', e => {
+        // Стартовый ион для демонстрации
+        addIon(1.8, 0.6, 1.2);
+        
+        // --- Клик для добавления иона ---
+        renderer.do
+        mElement.addEventListener('click', (event) => {
             const rect = renderer.domElement.getBoundingClientRect();
             const mouse = new THREE.Vector2(
-                ((e.clientX - rect.left) / rect.width) * 2 - 1,
-                -((e.clientY - rect.top) / rect.height) * 2 + 1
+                ((event.clientX - rect.left) / rect.width) * 2 - 1,
+                -((event.clientY - rect.top) / rect.height) * 2 + 1
             );
             const raycaster = new THREE.Raycaster();
             raycaster.setFromCamera(mouse, camera);
@@ -103,10 +126,48 @@
             }
         });
         
-        // Анимация
+        // --- Резонанс (ПРОБЕЛ) ---
+        let resonance = false;
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                resonance = true;
+                e.preventDefault();
+            }
+        });
+        window.addEventListener('keyup', (e) => {
+            if (e.code === 'Space') {
+                resonance = false;
+                e.preventDefault();
+            }
+        });
+        
+        // --- Анимация ---
         function animate() {
-            requestAnim
-ationFrame(animate);
+            requestAnimationFrame(animate);
+            
+            // Эффект резонанса: атомы вибрируют
+            atoms.forEach((atom, index) => {
+                if (resonance) {
+                    const offset = (index % 3) * 0.05;
+                    atom.scale.setScalar(1 + Math.sin(Date.now() * 0.02 + index) * 0.03);
+                    atom.material.emissiveIntensity = 0.8;
+                } else {
+                    atom.scale.setScalar(1);
+                    atom.material.emissiveIntensity = 0.4;
+                }
+            });
+            
+            // Ионы тоже реагируют на резонанс
+            ions.forEach(ion => {
+                if (resonance) {
+                    ion.material.emissive.setHex(0xff6600);
+                    ion.material.emissiveIntensity = 1.0;
+                } else {
+                    ion.material.emissive.setHex(0x553300);
+                    ion.material.emissiveIntensity = 0.6;
+                }
+            });
+            
             controls.update();
             renderer.render(scene, camera);
         }
