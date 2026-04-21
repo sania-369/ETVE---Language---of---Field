@@ -83,7 +83,7 @@
         for (let i = -2; i <= 2; i++) {
             for (let j = -2; j <= 2; j++) {
                 for (let k = -2; k <= 2; k++) {
-                    const atom = new THREE.Mesh(new THREE.SphereGeometry(0.18, 16, 8), atomMaterial);
+                    const atom = new THREE.Mesh(new THREE.SphereGeometry(0.18, 16, 8), atomMaterial.clone());
                     atom.position.set(i * spacing, j * spacing, k * spacing);
                     scene.add(atom);
                     atoms.push(atom);
@@ -108,10 +108,12 @@
         
         // Стартовый ион для демонстрации
         addIon(1.8, 0.6, 1.2);
+        addIon(-1.5, -0.8, 2.0);
+        addIon(2.2, -1.2, -1.0)
+        ;
         
         // --- Клик для добавления иона ---
-        renderer.do
-        mElement.addEventListener('click', (event) => {
+        renderer.domElement.addEventListener('click', (event) => {
             const rect = renderer.domElement.getBoundingClientRect();
             const mouse = new THREE.Vector2(
                 ((event.clientX - rect.left) / rect.width) * 2 - 1,
