@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ LENR Симулятор (ЕТВП) - Полная версия</title>
+    <title>⚡ LENR Симулятор (ЕТВП) - v2</title>
     <style>
         body { margin: 0; overflow: hidden; background: #0a0a14; font-family: 'Segoe UI', sans-serif; }
         #info {
@@ -22,9 +22,7 @@
             pointer-events: none; z-index: 10; text-align: right;
             border: 1px solid #88aaff;
         }
-        #cop-value {
-            font-size: 28px; font-weight: bold; color: #88ff88;
-        }
+        #cop-value { font-size: 28px; font-weight: bold; color: #88ff88; }
         .status-badge {
             position: absolute; top: 20px; right: 30px; color: #aaa;
             background: rgba(0,0,0,0.5); padding: 8px 16px; border-radius: 20px;
@@ -37,10 +35,10 @@
         <h2>⚡ LENR: Резонансная накачка (ЕТВП)</h2>
         <p>🖱️ Клик — добавить ион водорода</p>
         <p>⚡ ПРОБЕЛ — включить резонанс (3.5 ТГц)</p>
-        <p>🔵 Кулоновский барьер (истончается при резонансе)</p>
+        <p>🔵 Сфера вокруг атома — кулоновский барьер (истончается при резонансе)</p>
     </div>
     <div id="controls">
-        🎮 Мышь — вращение | Колёсико — зум | 🔊 Звук активируется первым кликом
+        🎮 Мышь — вращение | Колёсико — зум | Ионы ДВИГАЮТСЯ к атомам при резонансе
     </div>
     <div id="cop-panel">
         <div style="margin-bottom: 10px; color: #ccc;">⚡ COP (Коэффициент)</div>
@@ -68,7 +66,6 @@
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-        // --- Сцена ---
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x0a0a14);
         
@@ -87,39 +84,6 @@
         controls.enableZoom = true;
         controls.target.set(0, 0, 0);
         
-        // --- Звук (тихий гул) ---
-        let audioCtx = null;
-        let oscillator = null;
-        let gainNode = null;
-        let isAudioReady = false;
-        
-        function initAudio() {
-            if (isAudioReady) return;
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            oscillator = audioCtx.createOscillator();
-            gainNode = audioCtx.createGain();
-            
-            oscillator.type = '
-                sine';
-            oscillator.frequency.value = 55; // Низкий гул
-            gainNode.gain.value = 0;
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            oscillator.start();
-            isAudioReady = true;
-        }
-        
-        function setAudioResonance(enabled) {
-            if (!isAudioReady) return;
-            if (enabled) {
-                gainNode.gain.linearRampToValueAtTime(0.03, audioCtx.currentTime + 0.1);
-            } else {
-                gainNode.gain.linearRampToValueAtTime(0.0, audioCtx.currentTime + 0.1);
-            }
-        }
-        
-        // --- Свет ---
         scene.add(new THREE.AmbientLight(0x404060));
         const light1 = new THREE.PointLight(0xffaa88, 1.2);
         light1.position.set(5, 10, 7);
@@ -128,16 +92,17 @@
         light2.position.set(-5, 3, -8);
         scene.add(light2);
         
-        // --- Решётка никеля ---
+        // --- Решётка никеля с барьерами ---
         const atoms = [];
         const barriers = [];
         const spacing = 1.4;
-        const atomMaterial = new THREE.MeshStandardMaterial({ 
-            color: 0x88aacc, emissive: 0x224466, emissiveIntensity: 0.4,
-            roughness: 0.3, metalness: 0.1
+        
+        const atomMaterial = new THREE.M
+        eshStandardMaterial({ 
+            color: 0x88aacc, emissive: 0x224466, emissiveIntensity: 0.4
         });
         const barrierMaterial = new THREE.MeshPhongMaterial({
-            color: 0x88aaff, transparent: true, opacity: 0.12, depthWrite: false
+            color: 0x88aaff, transparent: true, opacity: 0.12
         });
         
         for (let i = -2; i <= 2; i++) {
@@ -153,12 +118,12 @@
                     const barrier = new THREE.Mesh(new THREE.SphereGeometry(0.55, 24, 12), barrierMaterial.clone());
                     barrier.position.copy(pos);
                     scene.add(barrier);
-                    barriers.push({ mesh: barrier, baseScale: 1.0 });
+                    barriers.push({ mesh: barrier });
                 }
             }
         }
         
-        // --- Ионы водорода ---
+        // --- Ионы ---
         const ions = [];
         const ionMaterial = new THREE.MeshStandardMaterial({ 
             color: 0xffaa00, emissive: 0x553300, emissiveIntensity: 0.6 
@@ -183,10 +148,9 @@
         addIon(-2.2, 1.2, -2.0);
         
         // --- Статистика ---
-        let energyIn = 0;
+        let energyIn = 4; // стартовые ионы уже считаются
         let energyOut = 0;
         let fusionCount = 0;
-        let keyPressCount = 0;
         
         function updateUI() {
             const cop = energyIn > 0 ? (energyOut / energyIn).toFixed(2) : '0.00';
@@ -197,15 +161,8 @@
             document.getElementById('fusion-count').textContent = fusionCount;
         }
         
-        // --- Клик для добавления иона ---
         renderer.domElement.addEventListener('click', (event) => {
-            // Активация звука при первом клике
-            if (!isAudioReady) {
-                initAudio();
-            }
-
-
-const rect = renderer.domElement.getBoundingClientRect();
+            const rect = renderer.domElement.getBoundingClientRect();
             const mouse = new THREE.Vector2(
                 ((event.clientX - rect.left) / rect.width) * 2 - 1,
                 -((event.clientY - rect.top) / rect.height) * 2 + 1
@@ -221,16 +178,13 @@ const rect = renderer.domElement.getBoundingClientRect();
             }
         });
         
-        // --- Резонанс (ПРОБЕЛ) ---
         let resonance = false;
         window.addEventListener('keydown', (e) => {
             if (e.code === 'Space') {
                 if (!resonance) {
                     resonance = true;
-                    keyPressCount++;
                     energyIn += 1;
                     document.getElementById('resonance-status').textContent = 'ВКЛ';
-                    setAudioResonance(true);
                     updateUI();
                 }
                 e.preventDefault();
@@ -240,19 +194,18 @@ const rect = renderer.domElement.getBoundingClientRect();
             if (e.code === 'Space') {
                 resonance = false;
                 document.getElementById('resonance-status').textContent = 'ВЫКЛ';
-                setAudioResonance(false);
                 e.preventDefault();
             }
         });
-        
-        // --- Анимация и физика ---
-        function animate() {
+
+
+function animate() {
             requestAnimationFrame(animate);
             
-            // Эффект резонанса: атомы вибрируют, барьеры истончаются
-            atoms.forEach((item, index) => {
+            // Визуализация резонанса
+            atoms.forEach((item, idx) => {
                 if (resonance) {
-                    item.mesh.scale.setScalar(1 + Math.sin(Date.now() * 0.025 + index) * 0.025);
+                    item.mesh.scale.setScalar(1 + Math.sin(Date.now() * 0.025 + idx) * 0.025);
                     item.mesh.material.emissiveIntensity = 0.9;
                 } else {
                     item.mesh.scale.setScalar(1);
@@ -270,12 +223,11 @@ const rect = renderer.domElement.getBoundingClientRect();
                 }
             });
             
-            // Динамика ионов
+            // ДВИЖЕНИЕ ИОНОВ ПРИ РЕЗОНАНСЕ
             ions.forEach(ion => {
                 if (ion.fused) return;
                 
                 if (resonance) {
-                    // Ищем ближайший атом никеля
                     let nearestAtom = null;
                     let minDist = Infinity;
                     atoms.forEach(atom => {
@@ -291,11 +243,10 @@ const rect = renderer.domElement.getBoundingClientRect();
                         const dist = dir.length();
                         if (dist > 0.3) {
                             dir.normalize();
-                            ion.vel.addScaledVector(dir, 0.002);
+                            ion.vel.addScaledVector(dir, 0.0025);
                         }
                     }
                     
-                    // Если ион очень близко к атому — слияние!
                     atoms.forEach(atom => {
                         const dist = ion.pos.distanceTo(atom.pos);
                         if (dist < 0.45 && !ion.fused) {
@@ -314,7 +265,6 @@ const rect = renderer.domElement.getBoundingClientRect();
                 ion.pos.add(ion.vel);
                 ion.mesh.position.copy(ion.pos);
                 
-                // Цвет и свечение иона
                 if (!ion.fused) {
                     if (resonance) {
                         ion.mesh.material.emissive.setHex(0xff8800);
