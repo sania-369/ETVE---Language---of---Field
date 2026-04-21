@@ -258,31 +258,67 @@ this.color = new THREE.Color().setHSL(0.1 + Math.random() * 0.2, 0.9, 0.55);
                     }
                 });
                 
-              // Влияние когерентности (ЗНАЧИТЕЛЬНОЕ замедление и упорядочивание)
+             // Влияние когерентности (УСИЛЕННЫЙ РЕЖИМ "Кристаллизация" для C > 0.9)
 if (coh > 0.3) {
-    // Чем выше когерентность, тем сильнее "трение" (успокоение хаоса)
-    // При C=1.0 трение достигает 3% за кадр (быстрое затухание)
-    const friction = 0.97 + (coh * 0.03); // 0.97 при C=0, 1.00 при C=1? Нет, нужно friction < 1
-    const actualFriction = Math.min(0.99, 0.95 + (coh * 0.04)); // от 0.95 до 0.99
-    this.velocity.multiplyScalar(actualFriction);
+    // Базовое трение: чем выше C, тем быстрее затухает хаос
+    let friction = 0.95;
+    if (coh > 0.9) {
+        // Режим "Кристаллизация": очень сильное замедление
+        friction = 0.85; // Почти мгновенное затухание
+    } else if (coh > 0.7) {
+        friction = 0.90;
+    } else if (coh > 0.5) {
+        friction = 0.93;
+    }
+    this.velocity.multiplyScalar(friction);
     
-    // При высокой когерентности солитоны стремятся к ближайшему "узлу" поля
-    if (coh > 0.7) {
-        // Притяжение к центру
+    // При C > 0.5: притяжение к центру
+    if (coh > 0.5) {
         const toCenter = new THREE.Vector3(0, 0, 0).sub(this.position);
         const distToCenter = toCenter.length();
-        const pullStrength = 0.002 * (coh - 0.7) * 10; // растёт с C
+        let pullStrength = 0.0;
+        
+        if (coh > 0.9) {
+            // Очень сильное притяжение к центру
+            pullStrength = 0.008 * (coh - 0.8) * 20;
+        } else {
+            pullStrength = 0.002 * (coh - 0.5) * 10;
+        }
+        
         toCenter.normalize().multiplyScalar(pullStrength);
         this.velocity.add(toCenter);
-        
-        // Взаимное выравнивание скоростей (синхронизация)
+    }
+    
+    // При C > 0.7: синхронизация скоростей
+    if (coh > 0.7) {
         solitonsArray.forEach(other => {
             if (other === this) return;
             const dist = this.position.distanceTo(other.position);
-            if (dist < 8.0) {
-                // Чем ближе, тем сильнее синхронизация
-                const alignStrength = 0.005 * (1 - dist / 8.0) * coh;
+            const influenceRadius = (coh > 0.9) ? 15.0 : 8.0; // Шире зона влияния
+            
+            if (dist < influenceRadius) {
+                let alignStrength = 0.005 * (1 - dist / influenceRadius) * coh;
+                if (coh > 0.9) {
+                    alignStrength *= 3.0; // Очень сильная синхронизация
+                }
                 this.velocity.lerp(other.velocity, alignStrength);
+            }
+        });
+    }
+    
+    // При C > 0.9: "Кристаллизация" — формирование решётки
+    if (coh > 0.9) {
+        solitonsArray.forEach(other => {
+            if (other === this) return;
+            const dir = new THREE.Vector3().subVectors(other.position, this.position);
+            const dist = dir.length();
+            const optimalDist = 3.5; // Равновесное расстояние
+            
+            if (dist < optimalDist * 2.5 && dist > 0.5) {
+                dir.normalize();
+                // Сила, удерживающая на оптимальном расстоянии
+                const latticeForce = 0.015 * (dist - optimalDist) * (coh - 0.9) * 15;
+                this.velocity.addScaledVector(dir, latticeForce);
             }
         });
     }
