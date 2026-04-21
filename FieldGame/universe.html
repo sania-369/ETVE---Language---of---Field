@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>🌀 Рождение Вселенной (ЕТВП)</title>
+    <style>
+        body { margin: 0; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
+        #info {
+            position: absolute; top: 20px; left: 20px; color: white;
+            background: rgba(0,0,0,0.7); padding: 15px 25px; border-radius: 8px;
+            pointer-events: none; z-index: 10;
+        }
+        #controls {
+            position: absolute; bottom: 30px; left: 20px; color: #ccc;
+            background: rgba(20,20,30,0.8); padding: 12px 20px; border-radius: 8px;
+            font-size: 14px; pointer-events: none; z-index: 10;
+        }
+        #thermo {
+            position: absolute; bottom: 30px; right: 30px; color: #fff;
+            background: rgba(0,0,0,0.6); padding: 15px 25px; border-radius: 8px;
+            text-align: right; font-size: 16px; z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <div id="info">
+        <h2>🌀 Рождение Вселенной (ЕТВП)</h2>
+        <p>🖱️ Клик — первичная флуктуация (рождение солитона)</p>
+        <p>⚡ ПРОБЕЛ — повысить когерентность (C) поля</p>
+    </div>
+    <div id="controls">
+        🎮 <strong>Управление:</strong> Мышь — вращение | Колёсико — зум | ПКМ — панорама
+    </div>
+    <div id="thermo">
+        <div>🌀 Когерентность (C): <span id="c-value">0.00</span></div>
+        <div>⚡ Энергия (E): <span id="e-value">0</span></div>
+        <div>🔥 Энтропия (S): <span id="s-value">0</span></div>
+        <div>💎 Свободная энергия (F): <span id="f-value">0</span></div>
+        <div>🌌 Солитонов: <span id="count-value">0</span></div>
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        // --- Инициализация сцены (как в текущей игре) ---
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x050510);
+        
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(30, 20, 40);
+        camera.lookAt(0, 0, 0);
+        
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        document.body.appendChild(renderer.domElement);
+        
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.3;
+        controls.enableZoom = true;
+        controls.target.set(0, 0, 0);
+        
+        // --- Освещение ---
+        scene.add(new THREE.AmbientLight(0x404060));
+        const dirLight = new THREE.DirectionalLight(0xffeedd, 1);
+        dirLight.position.set(10, 30, 20);
+        dirLight.castShadow = true;
+        dirLight.receiveShadow = true;
+        scene.add(dirLight);
+        
+        // --- Визуализация поля (кольца) ---
+        const fieldRings = [];
+        for (let i = 0; i < 12; i++) {
+            const radius = 5 + i * 2.5;
+            const ring = new THREE.Mesh(
+                new THREE.TorusGeometry(radius, 0.05, 16, 100),
+                new THREE.MeshStandardMaterial({ color: 0x88aaff, emissive: 0x224466, transparent: true, opacity: 0.15 })
+            );
+            ring.rotation.x = Math.PI / 2;
+            ring.rotation.z = i * 0.3;
+            scene.add(ring);
+            fieldRings.push(ring);
+        }
+        
+        // Звёздный фон
+        const starsGeo = new THREE.BufferGeometry();
+        const starsPos = new Float32Array(3000 * 3);
+        for (let i = 0; i < 3000 * 3; i+=3) {
+    const r = 80 + Math.random() * 200;
+            const th = Math.random() * Math.PI * 2;
+            const ph = Math.acos((Math.random()*2)-1);
+            starsPos[i] = Math.sin(ph)*Math.cos(th)*r;
+            starsPos[i+1] = Math.sin(ph)*Math.sin(th)*r;
+            starsPos[i+2] = Math.cos(ph)*r;
+        }
+        starsGeo.setAttribute('position', new THREE.BufferAttribute(starsPos, 3));
+        scene.add(new THREE.Points(starsGeo, new THREE.PointsMaterial({color: 0xffffff, size: 0.15})));
+        
+        // --- Данные симуляции ---
+        const solitons = [];
+        let coherence = 0.0;
+        
+        // Класс Солитона (упрощённый, как в игре)
+        class Soliton {
+            constructor(x, y, z) {
+                this.pos = new THREE.Vector3(x, y, z);
+                this.vel = new THREE.Vector3(
+                    (Math.random()-0.5)*0.2,
+                    (Math.random()-0.5)*0.2,
+                    (Math.random()-0.5)*0.2
+                );
+                this.mass = 0.5 + Math.random()*1.5;
+                this.radius = 0.5 * Math.sqrt(this.mass);
+                this.color = new THREE.Color().setHSL(0.05 + Math.random()*0.2, 0.9, 0.5);
+                
+                const geo = new THREE.SphereGeometry(this.radius, 24, 12);
+                const mat = new THREE.MeshStandardMaterial({ color: this.color, emissive: this.color, emissiveIntensity: 0.3 });
+                this.mesh = new THREE.Mesh(geo, mat);
+                this.mesh.castShadow = true;
+                this.mesh.receiveShadow = true;
+                this.mesh.position.copy(this.pos);
+                scene.add(this.mesh);
+            }
+            
+            update(solitonsArray, coh) {
+                // Упрощённая физика (как в игре)
+                solitonsArray.forEach(other => {
+                    if (other === this) return;
+                    const dir = new THREE.Vector3().subVectors(other.pos, this.pos);
+                    const dist = Math.max(dir.length(), 0.01);
+                    const force = 0.01 * this.mass * other.mass / (dist*dist);
+                    dir.normalize();
+                    this.vel.addScaledVector(dir, force);
+                    
+                    if (dist < this.radius + other.radius) {
+                        this.vel.addScaledVector(dir, -0.5);
+                    }
+                });
+                
+                if (coh > 0.3) {
+                    const friction = 0.95 + (coh * 0.03);
+                    this.vel.multiplyScalar(Math.min(friction, 0.99));
+                    
+                    if (coh > 0.6) {
+                        const toCenter = new THREE.Vector3(0,0,0).sub(this.pos);
+                        toCenter.normalize().multiplyScalar(0.002 * (coh-0.6)*10);
+                        this.vel.add(toCenter);
+                    }
+                }
+                
+                this.pos.add(this.vel);
+                
+                // Мягкие границы
+                const limit = 35;
+                ['x','y','z'].forEach(axis => {
+                    if (Math.abs(this.pos[axis]) > limit) {
+                        this.pos[axis] = Math.sign(this.pos[axis]) * limit;
+                        this.vel[axis] *= -0.5;
+                    }
+                });
+                
+                this.mesh.position.copy(this.pos);
+                
+                // Цвет зависит от C
+                const hue = 0.05 + (coh * 0.3);
+                const col = new THREE.Color().setHSL(hue, 0.9, 0.5);
+                this.mesh.material.color.set(col);
+                this.mesh.material.emissive.set(col);
+                this.mesh.material.emissiveIntensity = 0.3 + coh * 0.7;
+            }
+        }
+        
+        // --- Термодинамика ---
+        function updateThermo() {
+            let E = 0, S = 0;
+            solitons.forEach(s => {
+                E += 0.5 * s.mass * s.vel.lengthSq();
+                S += s.mass * Math.log(s.vel.lengthSq() + 0.001);
+            });
+          S = Math.max(0, S);
+            const F = E - (0.5 * coherence) * S;
+            
+            document.getElementById('c-value').textContent = coherence.toFixed(2);
+            document.getElementById('e-value').textContent = E.toFixed(1);
+            document.getElementById('s-value').textContent = S.toFixed(1);
+            document.getElementById('f-value').textContent = F.toFixed(1);
+            document.getElementById('count-value').textContent = solitons.length;
+        }
+        
+        // --- Управление ---
+        let spacePressed = false;
+        window.addEventListener('keydown', e => { if (e.code === 'Space') { spacePressed = true; e.preventDefault(); } });
+        window.addEventListener('keyup', e => { if (e.code === 'Space') { spacePressed = false; e.preventDefault(); } });
+        
+        renderer.domElement.addEventListener('click', event => {
+            const rect = renderer.domElement.getBoundingClientRect();
+            const mouse = new THREE.Vector2(
+                ((event.clientX - rect.left) / rect.width) * 2 - 1,
+                -((event.clientY - rect.top) / rect.height) * 2 + 1
+            );
+            const raycaster = new THREE.Raycaster();
+            raycaster.setFromCamera(mouse, camera);
+            const plane = new THREE.Plane(new THREE.Vector3(0,1,0), 0);
+            const target = new THREE.Vector3();
+            raycaster.ray.intersectPlane(plane, target);
+            if (target) {
+                target.y = (Math.random()-0.5)*5;
+                solitons.push(new Soliton(target.x, target.y, target.z));
+            }
+        });
+        
+        // --- Анимация ---
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            if (spacePressed) coherence = Math.min(1.0, coherence + 0.005);
+            else coherence = Math.max(0.0, coherence - 0.002);
+            
+            scene.background.setHSL(0.66, 0.8, 0.03 + coherence*0.08);
+            fieldRings.forEach((ring, i) => {
+                ring.material.emissiveIntensity = 0.1 + coherence * 0.4;
+                ring.scale.setScalar(1 + coherence * 0.1 * Math.sin(i*0.5));
+            });
+            
+            solitons.forEach(s => s.update(solitons, coherence));
+            updateThermo();
+            
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+        
+        // Стартовые солитоны
+        for (let i=0; i<8; i++) {
+            const ang = (i/8)*Math.PI*2;
+            solitons.push(new Soliton(Math.cos(ang)*8, (Math.random()-0.5)*3, Math.sin(ang)*8));
+        }
+        
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
