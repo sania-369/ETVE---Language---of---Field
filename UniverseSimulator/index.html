@@ -3,38 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌀 Сверхмассивная ЧД и Галактики (ЕТВП)</title>
+    <title>🌀 Сверхмассивная ЧД (ЕТВП)</title>
     <style>
-        body { margin: 0; overflow: hidden; font-family: 'Segoe UI', sans-serif; background: black; }
+        body { margin: 0; overflow: hidden; font-family: 'Segoe UI', sans-serif; background: #050510; }
         #info {
             position: absolute; top: 20px; left: 20px; color: white;
-            background: rgba(0,0,0,0.7); padding: 15px 25px; border-radius: 8px;
+            background: rgba(0,0,0,0.6); padding: 15px 25px; border-radius: 8px;
             pointer-events: none; z-index: 10; backdrop-filter: blur(4px);
         }
         #controls {
             position: absolute; bottom: 30px; left: 20px; color: #ccc;
-            background: rgba(20,20,30,0.8); padding: 12px 20px; border-radius: 8px;
-            font-size: 14px; pointer-events: none; z-index: 10;
+            background: rgba(0,0,0,0.6); padding: 12px 20px; border-radius: 8px;
+            pointer-events: none; z-index: 10;
         }
-        #thermo {
-            position: absolute; bottom: 30px; right: 30px; color: #fff;
+        #stats {
+            position: absolute; bottom: 30px; right: 30px; color: white;
             background: rgba(0,0,0,0.6); padding: 15px 25px; border-radius: 8px;
-            text-align: right; font-size: 16px; z-index: 10;
+            pointer-events: none; z-index: 10;
         }
-        #thermo div { margin: 5px 0; }
     </style>
 </head>
 <body>
     <div id="info">
-        <h2>🌀 Сверхмассивная ЧД (ЕТВП)</h2>
+        <h2>🌀 Сверхмассивная ЧД и Галактики</h2>
         <p>🖱️ Клик — создать галактику</p>
         <p>⚡ ПРОБЕЛ — повысить когерентность (C → 0.99999)</p>
-        <p>🌑 Центральная сфера — ЧД с почти нулевым горизонтом</p>
     </div>
     <div id="controls">
         🎮 Мышь — вращение | Колёсико — зум | ПКМ — панорама
     </div>
-    <div id="thermo">
+    <div id="stats">
         <div>🌀 C: <span id="c-value">0.0000</span></div>
         <div>🌌 Галактик: <span id="count-value">0</span></div>
     </div>
@@ -52,89 +50,81 @@
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-        // --- Сцена ---
+        // --- БАЗОВАЯ СЦЕНА (гарантированно не чёрная) ---
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x050510);
+        scene.background = new THREE.Color(0x0a0a20);
         
         const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(35, 25, 50);
+        camera.position.set(30, 20, 40);
         camera.lookAt(0, 0, 0);
         
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.shadowMap.enabled = true;
         document.body.appendChild(renderer.domElement);
         
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
-        controls.dampingFactor = 0.05;
         controls.autoRotate = true;
-        controls.autoRotateSpeed = 0.15;
+        controls.autoRotateSpeed = 0.3;
         controls.enableZoom = true;
         controls.target.set(0, 0, 0);
         
-        // --- Освещение ---
-        scene.add(new THREE.AmbientLight(0x303050));
-        const light1 = new THREE.PointLight(0xffccaa, 1.2);
-        light1.position.set(20, 35, 25);
+        // --- СВЕТ ---
+        scene.add(new THREE.AmbientLight(0x404060));
+        const light1 = new THREE.PointLight(0xffaa88, 1.2);
+        light1.position.set(20, 30, 20);
         scene.add(light1);
-        const light2 = new THREE.PointLight(0xaaccff, 0.8);
-        light2.position.set(-25, 15, -30);
+        const light2 = new THREE.PointLight(0x88aaff, 0.8);
+        light2.position.set(-20, 10, -30);
         scene.add(light2);
         
-        // --- Сетка ---
-        const gridHelper = new THREE.GridHelper(80, 30, 0x88aaff, 0x334466);
+        // --- СЕТКА (чтобы точно было видно пространство) ---
+        const gridHelper = new THREE.GridHelper(60, 20, 0x88aaff, 0x334466);
         scene.add(gridHelper);
         
-        // --- Звёзды ---
+        // --- ЗВЁЗДЫ ---
         const starsGeo = new THREE.BufferGeometry();
-        const starsPos = new Float32Array(3000 * 3);
-        for (let i = 0; i < 3000 * 3; i+=3) {
-            starsPos[i] = (Math.random() - 0.5) * 250;
-            starsPos[i+1] = (Math.random() - 0.5) * 250;
-            starsPos[i+2] = (Math.random() - 0.5) * 250;
+        const starsPos = new Float32Array(2000 * 3);
+        for (let i = 0; i < 2000 * 3; i+=3) {
+            starsPos[i] = (Math.random() - 0.5) * 200;
+            starsPos[i+1] = (Math.random() - 0.5) * 200;
+            starsPos[i+2] = (Math.random() - 0.5) * 200;
         }
         starsGeo.setAttribute('position', new THREE.BufferAttribute(starsPos, 3));
-        scene.add(new THREE.Points(starsGeo, new THREE.PointsMaterial({color: 0xffffff, size: 0.2})));
-        д в центре) ---
-        const centralVoid = {
+        scene.add(new THREE.Points(starsGeo, new THREE.PointsMaterial({color: 0xffffff, size: 0.15})));
+        
+        // --- ЦЕНТРАЛЬНАЯ ЧД (войд) ---
+        const blackHole = {
             pos: new THREE.Vector3(0, 0, 0),
-            radius: 14.0
+            radius: 12.0
         };
         
-        const voidMesh = new THREE.Mesh(
-            new THREE.SphereGeometry(centralVoid.radius, 64, 32),
-            new THREE.MeshPhongMaterial({
-                color: 0x0a0a1a,
-                transparent: true,
-                opacity: 0.25,
-                depthWrite: false,
-                emissive: new THREE.Color(0x111122),
-                side: THREE.DoubleSide
-            })
+        const bhMesh = new THREE.Mesh(
+            new THREE.SphereGeometry(blackHole.radius, 64, 32),
+            new THREE.MeshPhongMaterial({ color: 0x0a0a1a, transparent: true, opacity: 0.35 })
         );
-        voidMesh.position.copy(centralVoid.pos);
-        scene.add(voidMesh);
+        bhMesh.position.copy(blackHole.pos);
+        scene.add(bhMesh);
         
-        // Горизонт событий (маленькое яркое кольцо)
-        const horizonRing = new THREE.Mesh(
-            new THREE.TorusGeometry(centralVoid.radius * 0.3, 0.15, 16, 64),
-            new THREE.MeshStandardMaterial({ color: 0xff8844, emissive: 0x442200, emissiveIntensity: 1.2 })
+        // Горизонт событий (кольцо)
+        const horizon = new THREE.Mesh(
+            new THREE.TorusGeometry(blackHole.radius * 0.4, 0.15, 16, 64),
+            new THREE.MeshStandardMaterial({ color: 0xff8844, emissive: 0x442200 })
         );
-        horizonRing.position.copy(centralVoid.pos);
-        horizonRing.rotation.x = Math.PI / 2;
-        scene.add(horizonRing);
+        horizon.position.copy(blackHole.pos);
+        horizon.rotation.x = Math.PI / 2;
+        scene.add(horizon);
         
-        // Аккреционный диск (тонкое кольцо)
-        const accretionDisk = new THREE.Mesh(
-            new THREE.TorusGeometry(centralVoid.radius * 0.8, 0.08, 16, 128),
-            new THREE.MeshStandardMaterial({ color: 0x88aaff, emissive: 0x224466, emissiveIntensity: 0.8, transparent: true, opacity: 0.6 })
+        // Аккреционный диск
+        const disk = new THREE.Mesh(
+            new THREE.TorusGeometry(blackHole.radius * 0.9, 0.1, 16, 128),
+            new THREE.MeshStandardMaterial({ color: 0x88aaff, transparent: true, opacity: 0.5 })
         );
-        accretionDisk.position.copy(centralVoid.pos);
-        accretionDisk.rotation.x = Math.PI / 2 + 0.1;
-        scene.add(accretionDisk);
+        disk.position.copy(blackHole.pos);
+        disk.rotation.x = Math.PI / 2 + 0.1;
+        scene.add(disk);
         
-        // --- Галактики ---
+        // --- ГАЛАКТИКИ ---
         const galaxies = [];
         let coherence = 0.0;
         
@@ -142,13 +132,13 @@
             constructor(x, y, z) {
                 this.pos = new THREE.Vector3(x, y, z);
                 this.vel = new THREE.Vector3(
-                    (Math.random() - 0.5) * 0.08,
-                    (Math.random() - 0.5) * 0.08,
-                    (Math.random() - 0.5) * 0.08
+                    (Math.random() - 0.5) * 0.1,
+                    (Math.random() - 0.5) * 0.1,
+                    (Math.random() - 0.5) * 0.1
                 );
-                this.mass = 0.8 + Math.random() * 1.2;
-                this.radius = 0.55 * Math.sqrt(this.mass);
-                this.color = new THREE.Color().setHSL(0.05 + Math.random()*0.15, 0.95, 0.55);
+                this.mass = 1.0;
+                this.radius = 0.7;
+                this.color = new THREE.Color().setHSL(0.05 + Math.random()*0.15, 0.9, 0.55);
                 
                 this.mesh = new THREE.Mesh(
                     new THREE.SphereGeometry(this.radius, 24, 12),
@@ -158,66 +148,45 @@
                 scene.add(this.mesh);
                 
                 this.glow = new THREE.Mesh(
-                    new THREE.SphereGeometry(this.radius * 1.8, 16, 8),
-                    new THREE.MeshBasicMaterial({ color: this.color, transparent: true, opacity: 0.15 })
+                    new THREE.SphereGeometry(this.radius * 1.8, 16),
+                    new THREE.MeshBasicMaterial({ color: this.color, transparent: true, opacity: 0.2 })
                 );
                 this.glow.position.copy(this.pos);
                 scene.add(this.glow);
             }
             
             update(coh) {
-                // Гравитация между галактиками (слабая)
-                galaxies.forEach(other => {
-                    if (other === this) return;
-                    const dir = new THREE.Vector3().subVectors(other.pos, this.pos);
-                    const dist = Math.max(dir.length(), 0.5);
-                    const force = 0.003 * this.mass * other.mass / (dist * dist);
-                    dir.normalize();
-                    this.vel.addScaledVector(dir, force);
-                });
-                
-                // Притяжение к центральной ЧД
-                const toCenter = new THREE.Vector3().subVectors(centralVoid.pos, this.pos);
-                const distToCenter = Math.max(toCenter.length(), 0.5);
-                const gravityForce = 0.015 * this.mass / (distToCenter * distToCenter);
+                // Притяжение к центру
+                const toCenter = new THREE.Vector3().subVectors(blackHole.pos, this.pos);
+                const dist = Math.max(toCenter.length(), 0.5);
+                const gravity = 0.012 / (dist * dist);
                 toCenter.normalize();
-                this.vel.addScaledVector(toCenter, gravityForce);
+                this.vel.addScaledVector(toCenter, gravity);
                 
-                // Отталкивание от ЧД (чтобы не упали внутрь) — Z-принцип!
-                if (distToCenter < centralVoid.radius * 0.8) {
-
-
-const pushDir = this.pos.clone().normalize();
-                    const pushForce = 0.04 * (centralVoid.radius * 0.8 - distToCenter);
-                    this.vel.addScaledVector(pushDir, pushForce);
+                // Отталкивание (чтобы не упасть в ЧД)
+                if (dist < blackHole.radius * 1.2) {
+                    const push = this.pos.clone().normalize();
+                    this.vel.addScaledVector(push, 0.05);
                 }
                 
-                // Влияние когерентности
-                if (coh > 0.2) {
-                    // Очень слабое трение (медленное затухание)
-                    this.vel.multiplyScalar(0.998);
-                    
-                    // Дополнительное притяжение к центру при высокой C
-                    if (coh > 0.5) {
-                        const pull = toCenter.clone().normalize().multiplyScalar(0.0008 * (coh - 0.5) * 5);
-                        this.vel.add(pull);
-                    }
+                // Когерентность: трение
+                if (coh > 0.3) {
+                    this.vel.multiplyScalar(0.995);
                 }
                 
-                // Ограничение максимальной скорости (величественное движение)
-                const maxSpeed = 0.12;
-                if (this.vel.length() > maxSpeed) {
-                    this.vel.normalize().multiplyScalar(maxSpeed);
+                // Ограничение скорости
+                if (this.vel.length() > 0.15) {
+                    this.vel.normalize().multiplyScalar(0.15);
                 }
                 
                 this.pos.add(this.vel);
                 
-                // Мягкие границы
-                const limit = 50;
+                // Границы
+                const limit = 45;
                 ['x','y','z'].forEach(axis => {
                     if (Math.abs(this.pos[axis]) > limit) {
                         this.pos[axis] = Math.sign(this.pos[axis]) * limit;
-                        this.vel[axis] *= -0.2;
+                        this.vel[axis] *= -0.3;
                     }
                 });
                 
@@ -225,24 +194,20 @@ const pushDir = this.pos.clone().normalize();
                 this.glow.position.copy(this.pos);
                 
                 const hue = 0.05 + coh * 0.2;
-                const col = new THREE.Color().setHSL(hue, 0.95, 0.55);
+                const col = new THREE.Color().setHSL(hue, 0.9, 0.55);
                 this.mesh.material.color.set(col);
-                this.mesh.material.emissive.set(col);
-                this.mesh.material.emissiveIntensity = 0.4 + coh * 0.6;
+
+
+this.mesh.material.emissive.set(col);
                 this.glow.material.color.set(col);
-                this.glow.material.opacity = 0.1 + coh * 0.15;
             }
         }
         
-        // Стартовые галактики (6 штук на разных орбитах)
+        // Стартовые галактики
         for (let i = 0; i < 6; i++) {
             const angle = (i / 6) * Math.PI * 2;
-            const radius = 18 + Math.random() * 8;
-            galaxies.push(new Galaxy(
-                Math.cos(angle) * radius,
-                (Math.random() - 0.5) * 6,
-                Math.sin(angle) * radius
-            ));
+            const r = 18;
+            galaxies.push(new Galaxy(Math.cos(angle)*r, (Math.random()-0.5)*4, Math.sin(angle)*r));
         }
         
         // Управление
@@ -261,7 +226,7 @@ const pushDir = this.pos.clone().normalize();
             const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
             const target = new THREE.Vector3();
             if (raycaster.ray.intersectPlane(plane, target)) {
-                target.y = (Math.random() - 0.5) * 8;
+                target.y = (Math.random() - 0.5) * 6;
                 galaxies.push(new Galaxy(target.x, target.y, target.z));
             }
         });
@@ -270,18 +235,8 @@ const pushDir = this.pos.clone().normalize();
         function animate() {
             requestAnimationFrame(animate);
             
-            if (spacePressed) coherence = Math.min(0.99999, coherence + 0.0015);
-            else coherence = Math.max(0.0, coherence - 0.0008);
-            
-            // Визуализация ЧД зависит от C
-            voidMesh.material.opacity = 0.2 + coherence * 0.15;
-            voidMesh.material.emissiveIntensity = 0.1 + coherence * 0.5;
-            horizonRing.material.emissiveIntensity = 0.8 + cohere
-
-
-nce * 1.0;
-            accretionDisk.material.opacity = 0.4 + coherence * 0.3;
-            accretionDisk.rotation.y += 0.005;
+            if (spacePressed) coherence = Math.min(0.99999, coherence + 0.002);
+            else coherence = Math.max(0.0, coherence - 0.001);
             
             galaxies.forEach(g => g.update(coherence));
             
