@@ -3,95 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌀 Войды и Галактики (ЕТВП)</title>
+    <title>🌀 Войды и Галактики (ЕТВП) - Простая версия</title>
     <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            font-family: 'Segoe UI', 'Arial', sans-serif;
-            background-color: black;
-        }
+        body { margin: 0; overflow: hidden; font-family: 'Segoe UI', sans-serif; background: black; }
         #info {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            color: white;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 15px 25px;
-            border-radius: 8px;
-            pointer-events: none;
-            z-index: 10;
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: absolute; top: 20px; left: 20px; color: white;
+            background: rgba(0,0,0,0.7); padding: 15px 25px; border-radius: 8px;
+            pointer-events: none; z-index: 10; backdrop-filter: blur(4px);
         }
         #controls {
-            position: absolute;
-            bottom: 30px;
-            left: 20px;
-            color: #ccc;
-            background: rgba(20, 20, 30, 0.8);
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-size: 14px;
-            pointer-events: none;
-            z-index: 10;
-            backdrop-filter: blur(4px);
+            position: absolute; bottom: 30px; left: 20px; color: #ccc;
+            background: rgba(20,20,30,0.8); padding: 12px 20px; border-radius: 8px;
+            font-size: 14px; pointer-events: none; z-index: 10;
         }
         #thermo {
-            position: absolute;
-            bottom: 30px;
-            right: 30px;
-            color: #fff;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 15px 25px;
-            border-radius: 8px;
-            text-align: right;
-            font-size: 16px;
-            z-index: 10;
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            position: absolute; bottom: 30px; right: 30px; color: #fff;
+            background: rgba(0,0,0,0.6); padding: 15px 25px; border-radius: 8px;
+            text-align: right; font-size: 16px; z-index: 10;
         }
-        #thermo div {
-            margin: 5px 0;
-        }
-        #status {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            color: #aaa;
-            font-size: 14px;
-            z-index: 10;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 8px 16px;
-            border-radius: 20px;
-            backdrop-filter: blur(4px);
-        }
-        a {
-            color: #88aaff;
-            pointer-events: auto;
-        }
+        #thermo div { margin: 5px 0; }
     </style>
 </head>
 <body>
     <div id="info">
         <h2>🌀 Войды и Галактики (ЕТВП)</h2>
-        <p>🖱️ <strong>Клик</strong> — создать ядро галактики</p>
-        <p>⚡ <strong>ПРОБЕЛ</strong> — удерживать для повышения когерентности (C)</p>
-        <p>🌑 Тёмные сферы — войды (отталкивают галактики)</p>
+        <p>🖱️ Клик — создать галактику</p>
+        <p>⚡ ПРОБЕЛ — повысить когерентность (C → 0.99999)</p>
+        <p>🌑 Тёмные сферы — войды (отталкивают при низкой C)</p>
     </div>
     <div id="controls">
-        🎮 <strong>Камера:</strong> Мышь — вращение | Колёсико — зум | ПКМ — панорама
+        🎮 Мышь — вращение | Колёсико — зум | ПКМ — панорама
     </div>
     <div id="thermo">
-        <div>🌀 Когерентность (C): <span id="c-value">0.000</span></div>
-        <div>⚡ Энергия (E): <span id="e-value">0</span></div>
-        <div>🔥 Энтропия (S): <span id="s-value">0</span></div>
-        <div>💎 Свободная энергия (F): <span id="f-value">0</span></div>
+        <div>🌀 C: <span id="c-value">0.000</span></div>
         <div>🌌 Галактик: <span id="count-value">0</span></div>
-        <div>🌑 Войдов: <span id="void-count">5</span></div>
-    </div>
-    <div id="status">
-        <a href="https://github.com/sania-369/ETVE---Language---of---Field" target="_blank">ЕТВП</a> · v2.1
+        <div>🌑 Войдов: 5</div>
     </div>
 
     <script type="importmap">
@@ -107,182 +53,112 @@
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-        // --- Сцена ---
+        // --- Сцена (гарантированно не чёрная) ---
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x050510);
+        scene.background = new THREE.Color(0x0a0a20); // Тёмно-синий фон
         
-        // Камера
         const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(35, 25, 50);
+        camera.position.set(30, 20, 40);
         camera.lookAt(0, 0, 0);
         
-        // Рендер
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math
-
-
-.min(window.devicePixelRatio, 2));
-        renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         document.body.appendChild(renderer.domElement);
         
-        // Управление
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
-        controls.dampingFactor = 0.05;
         controls.autoRotate = true;
-        controls.autoRotateSpeed = 0.2;
+        controls.autoRotateSpeed = 0.3;
         controls.enableZoom = true;
-        controls.enablePan = true;
         controls.target.set(0, 0, 0);
         
-        // --- Освещение ---
+        // --- Свет ---
         scene.add(new THREE.AmbientLight(0x404060));
-        const dirLight = new THREE.DirectionalLight(0xffeedd, 1.2);
-        dirLight.position.set(20, 40, 30);
-        dirLight.castShadow = true;
-        dirLight.receiveShadow = true;
-        dirLight.shadow.mapSize.width = 2048;
-        dirLight.shadow.mapSize.height = 2048;
-        const d = 60;
-        dirLight.shadow.camera.left = -d;
-        dirLight.shadow.camera.right = d;
-        dirLight.shadow.camera.top = d;
-        dirLight.shadow.camera.bottom = -d;
-        dirLight.shadow.camera.near = 1;
-        dirLight.shadow.camera.far = 120;
-        scene.add(dirLight);
+        const light1 = new THREE.PointLight(0xffaa88, 1, 0, 0);
+        light1.position.set(20, 30, 20);
+        scene.add(light1);
+        const light2 = new THREE.PointLight(0x88aaff, 0.8);
+        light2.position.set(-20, 10, -30);
+        scene.add(light2);
         
-        const fillLight = new THREE.PointLight(0x4466ff, 0.5);
-        fillLight.position.set(-20, 15, 25);
-        scene.add(fillLight);
+        // --- Сетка (чтобы было видно пространство) ---
+        const gridHelper = new THREE.GridHelper(60, 20, 0x88aaff, 0x334466);
+        scene.add(gridHelper);
         
-        // Звёздный фон
+        // --- Звёзды (фон) ---
         const starsGeo = new THREE.BufferGeometry();
-        const starsPos = new Float32Array(4000 * 3);
-        for (let i = 0; i < 4000 * 3; i += 3) {
-            const r = 100 + Math.random() * 200;
-            const theta = Math.random() * Math.PI * 2;
-            const phi = Math.acos((Math.random() * 2) - 1);
-            starsPos[i] = Math.sin(phi) * Math.cos(theta) * r;
-            starsPos[i+1] = Math.sin(phi) * Math.sin(theta) * r;
-            starsPos[i+2] = Math.cos(phi) * r;
+        const starsPos = new Float32Array(2000 * 3);
+        for (let i = 0; i < 2000 * 3; i+=3) {
+            starsPos[i] = (Math.random() - 0.5) * 200;
+            starsPos[i+1] = (Math.random() - 0.5) * 200;
+            starsPos[i+2] = (Math.random() - 0.5) * 200;
         }
         starsGeo.setAttribute('position', new THREE.BufferAttribute(starsPos, 3));
-        scene.add(new THREE.Points(starsGeo, new THREE.PointsMaterial({color: 0xffffff, size: 0.25})));
-        
-        // --- Войды ---
+        scene.add(new THREE.Points(starsGeo, new THREE.PointsMaterial({color: 0xffffff, size: 0.15})));
+        // --- Войды (тёмные сферы) ---
         const voids = [];
         const voidMeshes = [];
         const voidPositions = [
-            { x: 22, y: 5, z: 15 }, { x: -20, y: -8, z: 22 }, { x: 18, y: 12, z: -25 },
-            { x: -25, y: -5, z: -18 }, { x: 10, y: -18, z: -12 }
+            { x: 18, y: 4, z: 12 }, { x: -16, y: -6, z: 18 }, { x: 14, y: 10, z: -20 },
+            { x: -22, y: -4, z: -14 }, { x: 8, y: -14, z: -10 }
         ];
         
         voidPositions.forEach(pos => {
-            voids.push({
-                pos: new THREE.Vector3(pos.x, pos.y, pos.z),
-                radius: 13.0
-            });
-            
-            const cloudGeo = new THREE.SphereGeometry(13.0, 48, 24);
-            const cloudMat = new THREE.MeshPhongMaterial({
-                color: 0x1a1a3a,
-                transparent: true,
-                opacity: 0.45,
-                depthWrite: false,
-                emissive: new THREE.Color(0x111133),
-                side: THREE.DoubleSide
-            });
-            const cloud = new THREE.Mesh(cloudGeo, cloudMat);
+            voids.push({ pos: new THREE.Vector3(pos.x, pos.y, pos.z), radius: 11 });
+            const cloud = new THREE.Mesh(
+                new THREE.SphereGeometry(11, 32, 16),
+                new THREE.MeshPhongMaterial({ color: 0x1a1a3a, transparent: true, opacity: 0.5, depthWrite: false })
+            );
             cloud.position.copy(voids[voids.length-1].pos);
-            cloud.receiveShadow = false;
-            cloud.castShadow = false;
             scene.add(cloud);
             voidMeshes.push(cloud);
         });
         
-        document.getElementById('void-count').textContent = voids.length;
-        
-        // --- Данные галактик ---
+        // --- Галактики ---
         const galaxies = [];
         let coherence = 0.0;
         
-        class GalaxyCore {
+        class Galaxy {
             constructor(x, y, z) {
                 this.pos = new THREE.Vector3(x, y, z);
                 this.vel = new THREE.Vector3(
-                    (Math.random() - 0.5) * 0.2,
-                    (Math.random() - 0.5) * 0.2,
-                    (Math.random() - 0.5) * 0.2
+                    (Math.random() - 0.5) * 0.15,
+                    (Math.random() - 0.5) * 0.15,
+                    (Math.random() - 0.5) * 0.15
                 );
-                this.mass = 1.0 + Math.random() * 2.0;
-                this.radius = 0.7 * Math.sqrt(this.mass);
-                this.color = new THREE.Color().setHSL(0.05 + Math.random() * 0.2, 0.9, 0.55);
+                this.mass = 1.0 + Math.random() * 1.5;
+                this.radius = 0.6 * Math.sqrt(this.mass);
+                this.color = new THREE.Color().setHSL(0.05 + Math.random()*0.15, 0.9, 0.55);
                 
-                // Ядро
-
-
-const coreGeo = new THREE.SphereGeometry(this.radius, 32, 16);
-                const coreMat = new THREE.MeshStandardMaterial({ 
-                    color: this.color, 
-                    emissive: this.color, 
-                    emissiveIntensity: 0.6,
-                    roughness: 0.2
-                });
-                this.mesh = new THREE.Mesh(coreGeo, coreMat);
-                this.mesh.castShadow = true;
-                this.mesh.receiveShadow = true;
+                this.mesh = new THREE.Mesh(
+                    new THREE.SphereGeometry(this.radius, 24, 12),
+                    new THREE.MeshStandardMaterial({ color: this.color, emissive: this.color, emissiveIntensity: 0.5 })
+                );
                 this.mesh.position.copy(this.pos);
                 scene.add(this.mesh);
                 
-                // Свечение
-                const glowGeo = new THREE.SphereGeometry(this.radius * 2.0, 24, 12);
-                const glowMat = new THREE.MeshBasicMaterial({ 
-                    color: this.color, 
-                    transparent: true, 
-                    opacity: 0.2,
-                    depthWrite: false
-                });
-                this.glow = new THREE.Mesh(glowGeo, glowMat);
+                this.glow = new THREE.Mesh(
+                    new THREE.SphereGeometry(this.radius * 1.8, 16, 8),
+                    new THREE.MeshBasicMaterial({ color: this.color, transparent: true, opacity: 0.2 })
+                );
                 this.glow.position.copy(this.pos);
                 scene.add(this.glow);
-                
-                // Рукава (упрощённые линии)
-                this.arms = [];
-                const armCount = 2;
-                for (let i = 0; i < armCount; i++) {
-                    const points = [];
-                    for (let j = 0; j <= 20; j++) {
-                        const t = j / 20;
-                        const angle = (i / armCount) * Math.PI * 2 + t * 10;
-                        const r = this.radius * 1.8 + t * this.radius * 5;
-                        points.push(new THREE.Vector3(Math.cos(angle) * r, 0, Math.sin(angle) * r));
-                    }
-                    const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
-                    const lineMat = new THREE.LineBasicMaterial({ color: this.color });
-                    const line = new THREE.Line(lineGeo, lineMat);
-                    line.position.copy(this.pos);
-                    scene.add(line);
-                    this.arms.push(line);
-                }
             }
             
-            update(galaxiesArray, coh, voidsArray) {
-                // Гравитация
-                galaxiesArray.forEach(other => {
+            update(coh) {
+                // Гравитация к другим галактикам
+                galaxies.forEach(other => {
                     if (other === this) return;
                     const dir = new THREE.Vector3().subVectors(other.pos, this.pos);
                     const dist = Math.max(dir.length(), 0.5);
-                    const force = 0.006 * this.mass * other.mass / (dist * dist);
+                    const force = 0.005 * this.mass * other.mass / (dist * dist);
                     dir.normalize();
                     this.vel.addScaledVector(dir, force);
                 });
                 
-                // Отталкивание от войдов
-                const voidStrength = Math.max(0.1, 1.0 - coh * 1.2);
-                voidsArray.forEach(v => {
+                // Отталкивание от войдов (эффект тем сильнее, чем НИЖЕ когерентность)
+                const voidStrength = Math.max(0.05, 1.0 - coh * 1.2);
+                voids.forEach(v => {
                     const dir = new THREE.Vector3().subVectors(this.pos, v.pos);
                     const dist = Math.max(dir.length(), 0.5);
                     if (dist < v.radius * 1.8) {
@@ -292,64 +168,47 @@ const coreGeo = new THREE.SphereGeometry(this.radius, 32, 16);
                     }
                 });
                 
-                // Влияние когерентности
-                if (coh > 0.2) {
-                    const friction = 0.99 - (coh * 0.008);
-                    this.vel.multiplyScalar(Math.max(0.96, friction));
-                    
-                    if (coh > 0.4) {
-                        const toCenter = new THREE.Vector3(0, 0, 0).sub(this.pos);
-                        const dist = toCenter.length();
-                        if (dist > 1.0) {
-                            const pull = 0.002 * (coh - 0.4) * 10;
-                            toCenter.normalize().multiplyScalar(pull);
-                            this.vel.add(toCenter);
-                        }
+                // Когерентность: трение + притяжение к центру
+                if (coh > 0.3) {
+                    this.vel.multiplyScalar(0.99);
+                    const toCenter = new THREE.Vector3(0, 0, 0).sub(this.pos);
+                    const dist = toCenter.length();
+                    if (dist > 1.0) {
+                        toCenter.normalize().multiplyScalar(0.0015 * (coh - 0.3) * 8);
+                        this.vel.add(toCenter);
                     }
                 }
                 
                 this.pos.add(this.vel);
+                
+                // Границы
+                const limit = 40;
+                ['x','y','z'].forEach(axis => {
 
 
-// Границы
-                const limit = 45;
-                ['x', 'y', 'z'].forEach(axis => {
-                    if (Math.abs(this.pos[axis]) > limit) {
+if (Math.abs(this.pos[axis]) > limit) {
                         this.pos[axis] = Math.sign(this.pos[axis]) * limit;
                         this.vel[axis] *= -0.3;
                     }
                 });
                 
-                // Обновление визуализации
                 this.mesh.position.copy(this.pos);
                 this.glow.position.copy(this.pos);
-                this.arms.forEach(arm => arm.position.copy(this.pos));
                 
-                const hue = 0.05 + (coh * 0.3);
+                const hue = 0.05 + coh * 0.25;
                 const col = new THREE.Color().setHSL(hue, 0.9, 0.55);
                 this.mesh.material.color.set(col);
                 this.mesh.material.emissive.set(col);
-                this.mesh.material.emissiveIntensity = 0.5 + coh * 0.8;
+                this.mesh.material.emissiveIntensity = 0.4 + coh * 0.8;
                 this.glow.material.color.set(col);
-                this.glow.material.opacity = 0.15 + coh * 0.25;
+                this.glow.material.opacity = 0.15 + coh * 0.2;
             }
         }
         
-        // Термодинамика
-        function updateThermo() {
-            let E = 0, S = 0;
-            galaxies.forEach(g => {
-                E += 0.5 * g.mass * g.vel.lengthSq();
-                S += g.mass * Math.log(g.vel.lengthSq() + 0.001);
-            });
-            S = Math.max(0, S);
-            const F = E - 0.5 * coherence * S;
-            
-            document.getElementById('c-value').textContent = coherence.toFixed(4);
-            document.getElementById('e-value').textContent = E.toFixed(2);
-            document.getElementById('s-value').textContent = S.toFixed(2);
-            document.getElementById('f-value').textContent = F.toFixed(2);
-            document.getElementById('count-value').textContent = galaxies.length;
+        // Стартовые галактики
+        for (let i = 0; i < 6; i++) {
+            const angle = (i / 6) * Math.PI * 2;
+            galaxies.push(new Galaxy(Math.cos(angle)*14, (Math.random()-0.5)*6, Math.sin(angle)*14));
         }
         
         // Управление
@@ -369,19 +228,9 @@ const coreGeo = new THREE.SphereGeometry(this.radius, 32, 16);
             const target = new THREE.Vector3();
             if (raycaster.ray.intersectPlane(plane, target)) {
                 target.y = (Math.random() - 0.5) * 8;
-                galaxies.push(new GalaxyCore(target.x, target.y, target.z));
+                galaxies.push(new Galaxy(target.x, target.y, target.z));
             }
         });
-        
-        // Стартовые галактики
-        for (let i = 0; i < 6; i++) {
-            const angle = (i / 6) * Math.PI * 2;
-            galaxies.push(new GalaxyCore(
-                Math.cos(angle) * 15,
-                (Math.random() - 0.5) * 8,
-                Math.sin(angle) * 15
-            ));
-        }
         
         // Анимация
         function animate() {
@@ -390,12 +239,11 @@ const coreGeo = new THREE.SphereGeometry(this.radius, 32, 16);
             if (spacePressed) coherence = Math.min(0.99999, coherence + 0.002);
             else coherence = Math.max(0.0, coherence - 0.001);
             
-            voidMeshes.forEach(mesh => {
-                mesh.material.opacity = 0.4 * (1 - coherence * 0.7);
-            });
+            voidMeshes.forEach(mesh => mesh.material.opacity = 0.45 * (1 - coherence * 0.7));
+            galaxies.forEach(g => g.update(coherence));
             
-            galaxies.forEach(g => g.update(galaxies, coherence, voids));
-            updateThermo();
+            document.getElementById('c-value').textContent = coherence.toFixed(4);
+            document.getElementById('count-value').textContent = galaxies.length;
             
             controls.update();
             renderer.render(scene, camera);
@@ -405,10 +253,7 @@ const coreGeo = new THREE.SphereGeometry(this.radius, 32, 16);
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
-            ren
-
-
-derer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setSize(window.innerWidth, window.innerHeight);
         });
     </script>
 </body>
