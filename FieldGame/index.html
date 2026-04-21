@@ -258,17 +258,35 @@ this.color = new THREE.Color().setHSL(0.1 + Math.random() * 0.2, 0.9, 0.55);
                     }
                 });
                 
-                // Влияние когерентности (замедление, упорядочивание)
-                if (coh > 0.5) {
-                    this.velocity.multiplyScalar(0.992);
-                    // Притяжение к центру при высокой когерентности
-                    const toCenter = new THREE.Vector3(0, 0, 0).sub(this.position);
-                    const distToCenter = toCenter.length();
-                    if (distToCenter > 15) {
-                        toCenter.normalize().multiplyScalar(0.005 * (coh - 0.5) * 2);
-                        this.velocity.add(toCenter);
-                    }
-                }
+              // Влияние когерентности (ЗНАЧИТЕЛЬНОЕ замедление и упорядочивание)
+if (coh > 0.3) {
+    // Чем выше когерентность, тем сильнее "трение" (успокоение хаоса)
+    // При C=1.0 трение достигает 3% за кадр (быстрое затухание)
+    const friction = 0.97 + (coh * 0.03); // 0.97 при C=0, 1.00 при C=1? Нет, нужно friction < 1
+    const actualFriction = Math.min(0.99, 0.95 + (coh * 0.04)); // от 0.95 до 0.99
+    this.velocity.multiplyScalar(actualFriction);
+    
+    // При высокой когерентности солитоны стремятся к ближайшему "узлу" поля
+    if (coh > 0.7) {
+        // Притяжение к центру
+        const toCenter = new THREE.Vector3(0, 0, 0).sub(this.position);
+        const distToCenter = toCenter.length();
+        const pullStrength = 0.002 * (coh - 0.7) * 10; // растёт с C
+        toCenter.normalize().multiplyScalar(pullStrength);
+        this.velocity.add(toCenter);
+        
+        // Взаимное выравнивание скоростей (синхронизация)
+        solitonsArray.forEach(other => {
+            if (other === this) return;
+            const dist = this.position.distanceTo(other.position);
+            if (dist < 8.0) {
+                // Чем ближе, тем сильнее синхронизация
+                const alignStrength = 0.005 * (1 - dist / 8.0) * coh;
+                this.velocity.lerp(other.velocity, alignStrength);
+            }
+        });
+    }
+}
                 
                 // Обновление позиции
                 this.position.add(this.velocity);
