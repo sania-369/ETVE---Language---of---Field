@@ -11,12 +11,20 @@
             background: rgba(0,0,0,0.6); padding: 15px 25px; border-radius: 8px;
             pointer-events: none; z-index: 10;
         }
+        #stats {
+            position: absolute; bottom: 30px; right: 30px; color: #fff;
+            background: rgba(0,0,0,0.6); padding: 12px 20px; border-radius: 8px;
+            pointer-events: none; z-index: 10;
+        }
     </style>
 </head>
 <body>
     <div id="info">
-        <h2>⚡ LENR: Решётка никеля</h2>
-        <p>🖱️ Клик — добавить ион (пока не активно)</p>
+        <h2>⚡ LENR: Решётка + ионы</h2>
+        <p>🖱️ Клик — добавить ион водорода</p>
+    </div>
+    <div id="stats">
+        <div>🌌 Ионов: <span id="ion-count">0</span></div>
     </div>
 
     <script type="importmap">
@@ -72,13 +80,47 @@
                     const atom = new THREE.Mesh(atomGeo, atomMat.clone());
                     atom.position.set(i * spacing, j * spacing, k * spacing);
                     scene.add(atom);
-                    atoms.push(atom);
+                    atoms.push({ mesh: atom, pos: atom.position.clone() });
                 }
             }
         }
         
+        // --- Ионы ---
+        const ions = [];
+        const ionGeo = new THREE.SphereGeometry(0.22, 16, 8);
+        const ionMat = new THREE.MeshStandardMaterial({ color: 0xffaa00, emissive: 0x553300, emissiveIntensity: 0.6 });
+        
+        function addIon(x, y, z) {
+            const ion = new THREE.Mesh(ionGeo, ionMat.clone());
+            ion.position.set(x, y, z);
+            scene.add(ion);
+            ions.push(ion);
+            document.getElementById('ion-count').textContent = ions.length;
+        }
+        
+        // Стартовые ионы
+        addIon(2.0, 0.8, 1.5);
+        addIon(-1.8, -1.0, 2.2);
+        addIon(2.5, -1.5, -1.2);
+        
+        // --- Клик для добавления ---
+        renderer.domElement.addEventListener('click', (e) => {
+            const rect = renderer.domElement.getBoundingClientRect();
+            const mouse = new THREE.Vector2(
+                ((e.clientX - rect.left) / rect.width) * 2 - 1,
+                -((e.clientY - rect.top) / rect.height) * 2 + 1
+            );
+            const raycaster = new THREE.Raycaster();
+            raycaster.setFromCamera(mouse, camera);
+            const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+            const target = new THREE.Vector3();
+            if (raycaster.ray.intersectPlane(plane, target)) {
+                addIon(target.x, target.y, target.z);
+            }
+        });
+        
         // --- Анимация ---
-        function animate() {
+          function animate() {
             requestAnimationFrame(animate);
             controls.update();
             renderer.render(scene, camera);
