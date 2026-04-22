@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ LENR Симулятор (ЕТВП)</title>
+    <title>⚡ LENR Симулятор (ЕТВП) - Полная версия</title>
     <style>
         body { margin: 0; overflow: hidden; background: #0a0a14; font-family: 'Segoe UI', sans-serif; }
         #info {
@@ -28,6 +28,7 @@
     <div id="info">
         <h2>⚡ LENR: Резонансная накачка (ЕТВП)</h2>
         <p>🖱️ Клик — добавить ион | ⚡ ПРОБЕЛ — резонанс</p>
+        <p>🔵 Сфера вокруг атома — кулоновский барьер (истончается при резонансе)</p>
     </div>
     <div id="cop-panel">
         <div>⚡ COP: <span id="cop-value">0.00</span></div>
@@ -51,6 +52,7 @@
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
+        // --- Сцена ---
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x0a0a14);
         
@@ -69,6 +71,7 @@
         controls.enableZoom = true;
         controls.target.set(0, 0, 0);
         
+        // --- Свет ---
         scene.add(new THREE.AmbientLight(0x404060));
         const light1 = new THREE.PointLight(0xffaa88, 1.2);
         light1.position.set(5, 10, 7);
@@ -77,6 +80,7 @@
         light2.position.set(-5, 3, -8);
         scene.add(light2);
         
+        // --- Решётка никеля с барьерами ---
         const atoms = [];
         const barriers = [];
         const spacing = 1.4;
@@ -104,6 +108,7 @@
             }
         }
         
+        // --- Ионы ---
         const ions = [];
         const ionGeo = new THREE.SphereGeometry(0.22, 16, 8);
         const ionMat = new THREE.MeshStandardMaterial({ color: 0xffaa00, emissive: 0x553300, emissiveIntensity: 0.6 });
@@ -126,6 +131,7 @@
         addIon(2.5, -1.5, -1.2);
         addIon(-2.2, 1.2, -2.0);
         
+        // --- Статистика ---
         let energyIn = 4;
         let energyOut = 0;
         let fusionCount = 0;
@@ -159,8 +165,12 @@
         let resonance = false;
         window.addEventListener('keydown', (e) => {
             if (e.code === 'Space') {
-                resonance = true;
-                document.getElementById('resonance-status').textContent = 'ВКЛ';
+                if (!resonance) {
+                    resonance = true;
+                    energyIn += 1;
+                    document.getElementById('resonance-status').textContent = 'ВКЛ';
+                    updateUI();
+                }
                 e.preventDefault();
             }
         });
@@ -184,7 +194,6 @@
                     item.mesh.material.emissiveIntensity = 0.4;
                 }
             });
-            
             barriers.forEach(item => {
                 if (resonance) {
                     item.mesh.scale.setScalar(0.6);
@@ -196,7 +205,7 @@
             });
             
             ions.forEach(ion => {
-              if (ion.fused) return;
+                if (ion.fused) return;
                 
                 if (resonance) {
                     let nearestAtom = null;
@@ -258,4 +267,4 @@
         updateUI();
     </script>
 </body>
-</html>  
+</html>
