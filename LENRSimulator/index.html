@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ LENR - Шаг 3.2 (Движение ионов)</title>
+    <title>⚡ LENR - Шаг 3.3 (Кулоновские барьеры)</title>
     <style>
         body { margin: 0; overflow: hidden; background: #0a0a14; font-family: 'Segoe UI', sans-serif; }
         #info {
@@ -25,8 +25,9 @@
 </head>
 <body>
     <div id="info">
-        <h2>⚡ LENR: Шаг 3.2 (Движение ионов)</h2>
-        <p>🖱️ Клик — добавить ион | ⚡ ПРОБЕЛ — резонанс (ионы движутся)</p>
+        <h2>⚡ LENR: Шаг 3.3 (Кулоновские барьеры)</h2>
+        <p>🖱️ Клик — добавить ион | ⚡ ПРОБЕЛ — резонанс (барьеры сжимаются)</p>
+        <p>🔵 Голубые сферы — кулоновский барьер</p>
     </div>
     <div id="stats">
         <div>🌌 Ионов: <span id="ion-count">0</span></div>
@@ -74,17 +75,37 @@
         scene.add(light2);
         
         const atoms = [];
+        const barriers = []; // Массив для барьеров
         const spacing = 1.4;
+        
         const atomGeo = new THREE.SphereGeometry(0.18, 16, 8);
         const atomMat = new THREE.MeshStandardMaterial({ color: 0x88aacc, emissive: 0x224466, emissiveIntensity: 0.4 });
+        
+        // Материал для кулоновского барьера
+        const barrierGeo = new THREE.SphereGeometry(0.55, 24, 12);
+        const barrierMat = new THREE.MeshPhongMaterial({ 
+            color: 0x88aaff, 
+            transparent: true, 
+            opacity: 0.15,
+            depthWrite: false
+        });
         
         for (let i = -2; i <= 2; i++) {
             for (let j = -2; j <= 2; j++) {
                 for (let k = -2; k <= 2; k++) {
+                    const pos = new THREE.Vector3(i * spacing, j * spacing, k * spacing);
+                    
+                    // Атом
                     const atom = new THREE.Mesh(atomGeo, atomMat.clone());
-                    atom.position.set(i * spacing, j * spacing, k * spacing);
+                    atom.position.copy(pos);
                     scene.add(atom);
-                    atoms.push({ mesh: atom, pos: atom.position.clone() });
+                    atoms.push({ mesh: atom, pos: pos });
+                    
+                    // Барьер
+                    const barrier = new THREE.Mesh(barrierGeo, barrierMat.clone());
+                    barrier.position.copy(pos);
+                    scene.add(barrier);
+                    barriers.push({ mesh: barrier });
                 }
             }
         }
@@ -143,6 +164,7 @@
         function animate() {
             requestAnimationFrame(animate);
             
+            // Атомы вибрируют при резонансе
             atoms.forEach((item, idx) => {
                 if (resonance) {
                     item.mesh.scale.setScalar(1 + Math.sin(Date.now() * 0.025 + idx) * 0.025);
@@ -153,7 +175,18 @@
                 }
             });
             
-            // ДВИЖЕНИЕ ИОНОВ
+            // Барьеры сжимаются при резонансе
+            barriers.forEach(item => {
+                if (resonance) {
+                    item.mesh.scale.setScalar(0.6);
+                    item.mesh.material.opacity = 0.08;
+                } else {
+                    item.mesh.scale.setScalar(1.0);
+                    item.mesh.material.opacity = 0.15;
+                }
+            });
+            
+            // Движение ионов
             ions.forEach(ion => {
                 if (resonance) {
                     let nearestAtom = null;
