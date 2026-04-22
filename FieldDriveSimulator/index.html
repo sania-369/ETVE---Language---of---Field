@@ -26,16 +26,17 @@
 <body>
     <div id="info">
         <h2>🚀 Полевой Двигатель (ЕТВП)</h2>
-        <p>⚡ ПРОБЕЛ — повысить когерентность (C) и создать тягу</p>
-        <p>🌀 Поле смещается вниз — аппарат летит ВВЕРХ</p>
+        <p>⚡ ПРОБЕЛ — тяга ВВЕРХ (поле смещается вниз)</p>
+        <p>⚡ ENTER — тяга ВПЕРЁД (поле смещается назад)</p>
     </div>
     <div id="stats">
         <div>🌀 Когерентность (C): <span id="c-value">0.00</span></div>
         <div>📈 Ускорение: <span id="accel-value">0.00</span> g</div>
         <div>⚡ Тяга: <span id="thrust-value">0.00</span> Н/кг</div>
+        <div>🎮 Режим: <span id="mode-value">ОЖИДАНИЕ</span></div>
     </div>
     <div class="badge">
-        🔘 Резонанс: <span id="resonance-status">ВЫКЛ</span>
+        🔘 Двигатель: <span id="engine-status">ВЫКЛ</span>
     </div>
 
     <script type="importmap">
@@ -94,8 +95,8 @@
         
         // --- Тор (аппарат) ---
         const craftGeo = new THREE.TorusGeometry(1.8, 0.5, 16, 48);
-        const craftMat = new THREE.MeshStandardMaterial({ 
-            color: 0x88aacc, 
+        const craftMat = new THREE.MeshStandardMaterial({
+          color: 0x88aacc, 
             emissive: 0x224466,
             roughness: 0.4,
             metalness: 0.3
@@ -143,30 +144,34 @@
         const particles = new THREE.Points(particleGeo, particleMat);
         craftGroup.add(particles);
         
-        // --- Вектор тяги (стрелка ВВЕРХ) ---
-        const arrowDir = new THREE.Vector3(0, 1, 0);
-        const arrowOrigin = new THREE.Vector3(0, -1.5, 0);
-        const arrowLength = 2.0;
-        const arrowColor = 0xff5500;
-        const arrowHelper = new THREE.ArrowHelper(arrowDir, arrowOrigin, arrowLength, arrowColor);
+        // --- Вектор тяги (стрелка) ---
+        const arrowHelper = new THREE.ArrowHelper(new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, -1.5, 0), 0.5, 0xff5500);
         craftGroup.add(arrowHelper);
         
-        // --- Когерентность ---
+        // --- Когерентность и режимы ---
         let coherence = 0.0;
-        let resonance = false;
+        let mode = 'none'; // 'up', 'forward'
         let velocity = new THREE.Vector3(0, 0, 0);
         
         window.addEventListener('keydown', (e) => {
             if (e.code === 'Space') {
-                resonance = true;
-                document.getElementById('resonance-status').textContent = 'ВКЛ';
+                mode = 'up';
+                document.getElementById('engine-status').textContent = 'ТЯГА ВВЕРХ';
+                document.getElementById('mode-value').textContent = 'ВВЕРХ';
+                e.preventDefault();
+            } else if (e.code === 'Enter') {
+                mode = 'forward';
+                document.getElementById('engine-status').textContent = 'ТЯГА ВПЕРЁД';
+                document.getElementById('mode-value').textContent = 'ВПЕРЁД';
                 e.preventDefault();
             }
         });
+        
         window.addEventListener('keyup', (e) => {
-            if (e.code === 'Space') {
-                resonance = false;
-                document.getElementById('resonance-status').textContent = 'ВЫКЛ';
+            if (e.code === 'Space' || e.code === 'Enter') {
+                mode = 'none';
+                document.getElementById('engine-status').textContent = 'ВЫКЛ';
+                document.getElementById('mode-value').textContent = 'ОЖИДАНИЕ';
                 e.preventDefault();
             }
         });
@@ -175,48 +180,59 @@
         function animate() {
             requestAnimationFrame(animate);
             
-            if (resonance) {
+            if (mode !== 'none') {
                 coherence = Math.min(0.999, coherence + 0.005);
             } else {
                 coherence = Math.max(0.0, coherence - 0.003);
             }
             
-            // Смещение поля при когерентности (Z-принцип: поле сдвигается ВНИЗ)
-            const offsetY = -coherence * 2.0;
+            // Смещение поля в зависимости от режима
             const positions = particles.geometry.attributes.position.array;
+            let offsetX = 0, offsetY = 0, offsetZ = 0;
+            
+            if (mode === 'up') {
+                offsetY = -coherence * 2.0; // поле вниз
+            } else if (mode === 'forward') {
+            offsetZ = -coherence * 2.0; // поле назад
+            }
             
             for (let i = 0; i < particleCount; i++) {
                 const base = fieldParticles[i];
-                positions[i*3] = base.baseX;
+                positions[i*3] = base.baseX + offsetX;
                 positions[i*3+1] = base.baseY + offsetY;
-                positions[i*3+2] = base.baseZ;
+                positions[i*3+2] = base.baseZ + offsetZ;
             }
             particles.geometry.attributes.position.needsUpdate = true;
             
-            // Цвет частиц зависит от C
+            // Цвет частиц
             const hue = 0.55 + coherence * 0.25;
             const color = new THREE.Color().setHSL(hue, 0.9, 0.5);
             particles.material.color.set(color);
             craft.material.emissiveIntensity = 0.3 + coherence * 0.8;
             
-            // Тяга и ускорение (из меморандума)
-            const thrust = coherence * 0.008; // Н/кг
-            const acceleration = thrust / 0.0098; // в g
+            // Тяга и ускорение
+            const thrust = coherence * 0.008;
+            const acceleration = thrust / 0.0098;
             
-            // Движение аппарата ВВЕРХ (по оси Y)
+            // Движение аппарата
             if (coherence > 0.1) {
-                velocity.y += thrust * 0.015;
+                if (mode === 'up') {
+                    velocity.y += thrust * 0.015;
+                    arrowHelper.setDirection(new THREE.Vector3(0, 1, 0));
+                } else if (mode === 'forward') {
+                    velocity.z += thrust * 0.015;
+                    arrowHelper.setDirection(new THREE.Vector3(0, 0, 1));
+                }
             }
-            velocity.multiplyScalar(0.99);
-            craftGroup.position.y += velocity.y;
             
-            // Обновление стрелки тяги
+            velocity.multiplyScalar(0.99);
+            craftGroup.position.add(velocity);
+            
+            // Длина стрелки
             arrowHelper.setLength(thrust * 300, 0.2 * thrust * 300);
             
-            // Камера следит за аппаратом (опционально)
             controls.target.copy(craftGroup.position);
             
-            // UI
             document.getElementById('c-value').textContent = coherence.toFixed(3);
             document.getElementById('accel-value').textContent = acceleration.toFixed(3);
             document.getElementById('thrust-value').textContent = thrust.toFixed(4);
@@ -233,4 +249,4 @@
         });
     </script>
 </body>
-</html>
+</html>    
