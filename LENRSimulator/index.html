@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ LENR - Шаг 3.2 (Движение ионов)</title>
+    <title>⚡ LENR Симулятор (ЕТВП) - Финал</title>
     <style>
         body { margin: 0; overflow: hidden; background: #0a0a14; font-family: 'Segoe UI', sans-serif; }
         #info {
@@ -11,11 +11,12 @@
             background: rgba(0,0,0,0.6); padding: 15px 25px; border-radius: 8px;
             pointer-events: none; z-index: 10;
         }
-        #stats {
-            position: absolute; bottom: 30px; right: 30px; color: white;
-            background: rgba(0,0,0,0.6); padding: 12px 20px; border-radius: 8px;
-            pointer-events: none; z-index: 10;
+        #cop-panel {
+            position: absolute; bottom: 30px; right: 30px; color: #fff;
+            background: rgba(0,0,0,0.6); padding: 15px 25px; border-radius: 8px;
+            pointer-events: none; z-index: 10; text-align: right;
         }
+        #cop-value { font-size: 24px; font-weight: bold; color: #88ff88; }
         .badge {
             position: absolute; top: 20px; right: 30px; color: #aaa;
             background: rgba(0,0,0,0.5); padding: 8px 16px; border-radius: 20px;
@@ -25,11 +26,14 @@
 </head>
 <body>
     <div id="info">
-        <h2>⚡ LENR: Шаг 3.2 (Движение ионов)</h2>
-        <p>🖱️ Клик — добавить ион | ⚡ ПРОБЕЛ — резонанс (ионы движутся)</p>
+        <h2>⚡ LENR: Резонансная накачка (ЕТВП)</h2>
+        <p>🖱️ Клик — добавить ион | ⚡ ПРОБЕЛ — резонанс</p>
+        <p>🔵 Сфера вокруг атома — кулоновский барьер</p>
     </div>
-    <div id="stats">
-        <div>🌌 Ионов: <span id="ion-count">0</span></div>
+    <div id="cop-panel">
+        <div>⚡ COP: <span id="cop-value">0.00</span></div>
+        <div>Вход: <span id="energy-in">0</span> | Выход: <span id="energy-out">0</span></div>
+        <div>Ионов: <span id="ion-count">0</span> | Слияний: <span id="fusion-count">0</span></div>
     </div>
     <div class="badge">
         🔘 Резонанс: <span id="resonance-status">ВЫКЛ</span>
@@ -74,17 +78,28 @@
         scene.add(light2);
         
         const atoms = [];
+        const barriers = [];
         const spacing = 1.4;
+        
         const atomGeo = new THREE.SphereGeometry(0.18, 16, 8);
         const atomMat = new THREE.MeshStandardMaterial({ color: 0x88aacc, emissive: 0x224466, emissiveIntensity: 0.4 });
+        const barrierGeo = new THREE.SphereGeometry(0.55, 24, 12);
+        const barrierMat = new THREE.MeshPhongMaterial({ color: 0x88aaff, transparent: true, opacity: 0.12 });
         
         for (let i = -2; i <= 2; i++) {
             for (let j = -2; j <= 2; j++) {
                 for (let k = -2; k <= 2; k++) {
+                    const pos = new THREE.Vector3(i * spacing, j * spacing, k * spacing);
+                    
                     const atom = new THREE.Mesh(atomGeo, atomMat.clone());
-                    atom.position.set(i * spacing, j * spacing, k * spacing);
+                    atom.position.copy(pos);
                     scene.add(atom);
-                    atoms.push({ mesh: atom, pos: atom.position.clone() });
+                    atoms.push({ mesh: atom, pos: pos });
+                    
+                    const barrier = new THREE.Mesh(barrierGeo, barrierMat.clone());
+                    barrier.position.copy(pos);
+                    scene.add(barrier);
+                    barriers.push({ mesh: barrier });
                 }
             }
         }
@@ -97,17 +112,32 @@
             const ion = {
                 mesh: new THREE.Mesh(ionGeo, ionMat.clone()),
                 pos: new THREE.Vector3(x, y, z),
-                vel: new THREE.Vector3(0, 0, 0)
+                vel: new THREE.Vector3(0, 0, 0),
+                fused: false
             };
             ion.mesh.position.copy(ion.pos);
             scene.add(ion.mesh);
             ions.push(ion);
-            document.getElementById('ion-count').textContent = ions.length;
+            updateUI();
         }
         
         addIon(2.0, 0.8, 1.5);
         addIon(-1.8, -1.0, 2.2);
         addIon(2.5, -1.5, -1.2);
+        addIon(-2.2, 1.2, -2.0);
+        
+        let energyIn = 4;
+        let energyOut = 0;
+        let fusionCount = 0;
+        
+        function updateUI() {
+            const cop = energyIn > 0 ? (energyOut / energyIn).toFixed(2) : '0.00';
+            document.getElementById('cop-value').textContent = cop;
+            document.getElementById('energy-in').textContent = energyIn;
+            document.getElementById('energy-out').textContent = energyOut;
+            document.getElementById('ion-count').textContent = ions.length;
+            document.getElementById('fusion-count').textContent = fusionCount;
+        }
         
         renderer.domElement.addEventListener('click', (e) => {
             const rect = renderer.domElement.getBoundingClientRect();
@@ -121,6 +151,8 @@
             const target = new THREE.Vector3();
             if (raycaster.ray.intersectPlane(plane, target)) {
                 addIon(target.x, target.y, target.z);
+                energyIn += 1;
+                updateUI();
             }
         });
         
@@ -153,17 +185,24 @@
                 }
             });
             
-            // ДВИЖЕНИЕ ИОНОВ
+            barriers.forEach(item => {
+                if (resonance) {
+                    item.mesh.scale.setScalar(0.6);
+                    item.mesh.material.opacity = 0.05;
+                } else {
+                    item.mesh.scale.setScalar(1.0);
+                    item.mesh.material.opacity = 0.12;
+                }
+            });
             ions.forEach(ion => {
+                if (ion.fused) return;
+                
                 if (resonance) {
                     let nearestAtom = null;
                     let minDist = Infinity;
                     atoms.forEach(atom => {
                         const dist = ion.pos.distanceTo(atom.pos);
-                        if (dist < minDist) {
-                            minDist = dist;
-                            nearestAtom = atom;
-                        }
+                        if (dist < minDist) { minDist = dist; nearestAtom = atom; }
                     });
                     
                     if (nearestAtom) {
@@ -175,16 +214,33 @@
                         }
                     }
                     
-                    ion.mesh.material.emissive.setHex(0xff8800);
-                    ion.mesh.material.emissiveIntensity = 1.2;
-                } else {
-                    ion.mesh.material.emissive.setHex(0x553300);
-                    ion.mesh.material.emissiveIntensity = 0.6;
+                    atoms.forEach(atom => {
+                        const dist = ion.pos.distanceTo(atom.pos);
+                        if (dist < 0.45 && !ion.fused) {
+                            ion.fused = true;
+                            ion.mesh.material.emissive.setHex(0xff4444);
+                            ion.mesh.material.emissiveIntensity = 1.5;
+                            ion.mesh.scale.setScalar(0.5);
+                            energyOut += 5;
+                            fusionCount++;
+                            updateUI();
+                        }
+                    });
                 }
                 
                 ion.vel.multiplyScalar(0.95);
                 ion.pos.add(ion.vel);
                 ion.mesh.position.copy(ion.pos);
+                
+                if (!ion.fused) {
+                    if (resonance) {
+                        ion.mesh.material.emissive.setHex(0xff8800);
+                        ion.mesh.material.emissiveIntensity = 1.2;
+                    } else {
+                        ion.mesh.material.emissive.setHex(0x553300);
+                        ion.mesh.material.emissiveIntensity = 0.6;
+                    }
+                }
             });
             
             controls.update();
@@ -197,6 +253,8 @@
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
+        
+        updateUI();
     </script>
 </body>
 </html>
