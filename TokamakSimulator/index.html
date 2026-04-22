@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌀 Токамак Симулятор (ЕТВП) - v2</title>
+    <title>🌀 Токамак Симулятор (ЕТВП) - v3</title>
     <style>
         body { margin: 0; overflow: hidden; background: #050510; font-family: 'Segoe UI', sans-serif; }
         #info {
@@ -26,13 +26,13 @@
 <body>
     <div id="info">
         <h2>🌀 Токамак: Резонансное удержание (ЕТВП)</h2>
-        <p>⚡ ПРОБЕЛ — повысить когерентность (C) и включить резонанс 50 кГц</p>
+        <p>⚡ ПРОБЕЛ — повысить когерентность (C) и включить резонанс</p>
         <p>💡 Плазма ярче и стабильнее при высокой C</p>
     </div>
     <div id="stats">
         <div>🌀 Когерентность (C): <span id="c-value">0.00</span></div>
         <div>⏱️ Время удержания (τ_E): <span id="tau-value">0.00</span> с</div>
-        <div>📡 Частота модуляции: <span id="freq-value">50</span> кГц</div>
+        <div>📡 Частота модуляции: 50 кГц</div>
     </div>
     <div class="badge">
         🔘 Резонанс: <span id="resonance-status">ВЫКЛ</span>
@@ -59,8 +59,9 @@
         camera.position.set(10, 6, 15);
         camera.lookAt(0, 0, 0);
         
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
         renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         document.body.appendChild(renderer.domElement);
         
         const controls = new OrbitControls(camera, renderer.domElement);
@@ -70,14 +71,17 @@
         controls.enableZoom = true;
         controls.target.set(0, 0, 0);
         
-        // --- Свет ---
+        // --- Свет (усиленный) ---
         scene.add(new THREE.AmbientLight(0x404060));
-        const light1 = new THREE.PointLight(0xffaa88, 1.0);
+        const light1 = new THREE.PointLight(0xffaa88, 1.5);
         light1.position.set(8, 12, 8);
         scene.add(light1);
-        const light2 = new THREE.PointLight(0x88aaff, 0.5);
+        const light2 = new THREE.PointLight(0x88aaff, 0.8);
         light2.position.set(-8, 4, -10);
         scene.add(light2);
+        const light3 = new THREE.PointLight(0xffffff, 0.5);
+        light3.position.set(0, 10, 0);
+        scene.add(light3);
         
         // --- Звёзды (фон) ---
         const starsGeo = new THREE.BufferGeometry();
@@ -95,8 +99,8 @@
         const torusMat = new THREE.MeshStandardMaterial({ 
             color: 0x88aacc, 
             transparent: true, 
-            opacity: 0.2,
-           side: THREE.DoubleSide
+            opacity: 0.15,
+            side: THREE.DoubleSide
         });
         const torus = new THREE.Mesh(torusGeo, torusMat);
         torus.rotation.x = Math.PI / 2;
@@ -110,19 +114,32 @@
         wireframeTorus.rotation.x = Math.PI / 2;
         scene.add(wireframeTorus);
         
-        // --- Плазма (внутренний светящийся шнур) ---
-        const plasmaGeo = new THREE.TorusGeometry(4.0, 0.7, 48, 80);
+        // --- ПЛАЗМА (ГАРАНТИРОВАННО ВИДИМАЯ) ---
+        const plasmaGeo = new THREE.TorusGeometry(4.0, 0.8, 64, 100);
         const plasmaMat = new THREE.MeshStandardMaterial({ 
             color: 0xff5500, 
-            emissive: 0xff2200,
-            transparent: true, 
-            opacity: 0.8
+            emissive: 0xff4400,
+            transparent: false,      // НЕПРОЗРАЧНАЯ
+            roughness: 0.3,
+            metalness: 0.0
         });
         const plasma = new THREE.Mesh(plasmaGeo, plasmaMat);
         plasma.rotation.x = Math.PI / 2;
         scene.add(plasma);
         
-        // --- Магнитные катушки (ВСЕ вертикально, как в реальном токамаке) ---
+        // Дополнительное свечение вокруг плазмы
+        const plasmaGlowGeo = new THREE.TorusGeometry(4.0, 0.9, 32, 80);
+        const plasmaGlowMat = new THREE.MeshBasicMaterial({ 
+            color: 0xff6600, 
+            transparent: true, 
+            opacity: 0.3,
+            side: THREE.DoubleSide
+        });
+        const plasmaGlow = new THREE.Mesh(plasmaGlowGeo, plasmaGlowMat);
+        plasmaGlow.rotation.x = Math.PI / 2;
+        scene.add(plasmaGlow);
+        
+        // --- Магнитные катушки ---
         const coils = [];
         const coilCount = 12;
         
@@ -136,7 +153,6 @@
             coil.position.z = Math.sin(angle) * 5.5;
             coil.position.y = 0;
             
-            // Поворот, чтобы плоскость катушки была направлена к центру
             coil.quaternion.setFromUnitVectors(
                 new THREE.Vector3(0, 0, 1),
                 new THREE.Vector3(Math.cos(angle), 0, Math.sin(angle))
@@ -176,38 +192,36 @@
                 coherence = Math.max(0.0, coherence - 0.002);
             }
             
-            // Время удержания (из меморандума)
             tauE = 0.5 + coherence * 5.0;
             
-            // Визуализация резонанса 50 кГц (дрожание плазмы)
-            const freqEffect = Math.sin(Date.now() * 0.5) * 0.02 * (1 - coherence); // чем выше C, тем меньше дрожание
+            // Визуализация резонанса 50 кГц (микровибрация)
+            const freqEffect = Math.sin(Date.now() * 0.5) * 0.015 * (1 - coherence);
             
             // Цвет плазмы зависит от C
             const hue = 0.03 + coherence * 0.2;
             const color = new THREE.Color().setHSL(hue, 1.0, 0.5);
             plasma.material.color.set(color);
             plasma.material.emissive.set(color);
-            plasma.material.emissiveIntensity = 0.5 + coherence * 2.0;
+            plasma.material.emissiveIntensity = 0.8 + coherence * 2.5;
             
-            // При резонансе плазма не исчезает, а становится ярче и немного пульсирует
+            plasmaGlow.material.color.set(color);
+            plasmaGlow.material.opacity = 0.2 + coherence * 0.4;
+            
             if (resonance) {
-                plasma.material.opacity = 0.8 + coherence * 0.2;
                 plasma.scale.setScalar(1.0 + freqEffect);
+                plasmaGlow.scale.setScalar(1.0 + freqEffect * 1.5);
             } else {
-                plasma.material.opacity = 0.6 + coherence * 0.3;
                 plasma.scale.setScalar(1.0);
+                plasmaGlow.scale.setScalar(1.0);
             }
             
-            // Катушки тоже реагируют
             coils.forEach((coil) => {
                 coil.material.emissiveIntensity = 0.2 + coherence * 0.6;
             });
             
-            // Тор тоже немного подсвечивается
             torus.material.emissive = new THREE.Color(0x224466);
             torus.material.emissiveIntensity = coherence * 0.3;
             
-            // Обновление UI
             document.getElementById('c-value').textContent = coherence.toFixed(3);
             document.getElementById('tau-value').textContent = tauE.toFixed(2);
             
