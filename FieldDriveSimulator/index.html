@@ -27,7 +27,7 @@
     <div id="info">
         <h2>🚀 Полевой Двигатель (ЕТВП)</h2>
         <p>⚡ ПРОБЕЛ — повысить когерентность (C) и создать тягу</p>
-        <p>🌀 Поле смещается назад — аппарат движется вперёд</p>
+        <p>🌀 Поле смещается вниз — аппарат летит ВВЕРХ</p>
     </div>
     <div id="stats">
         <div>🌀 Когерентность (C): <span id="c-value">0.00</span></div>
@@ -77,18 +77,22 @@
         light2.position.set(-5, 3, -10);
         scene.add(light2);
         
-        // --- Звёзды ---
+        // --- Звёзды (статичный фон) ---
         const starsGeo = new THREE.BufferGeometry();
-        const starsPos = new Float32Array(2000 * 3);
-        for (let i = 0; i < 2000 * 3; i+=3) {
-            starsPos[i] = (Math.random() - 0.5) * 200;
-            starsPos[i+1] = (Math.random() - 0.5) * 200;
-            starsPos[i+2] = (Math.random() - 0.5) * 200;
+        const starsPos = new Float32Array(3000 * 3);
+        for (let i = 0; i < 3000 * 3; i+=3) {
+            starsPos[i] = (Math.random() - 0.5) * 300;
+            starsPos[i+1] = (Math.random() - 0.5) * 300;
+            starsPos[i+2] = (Math.random() - 0.5) * 300;
         }
         starsGeo.setAttribute('position', new THREE.BufferAttribute(starsPos, 3));
-        scene.add(new THREE.Points(starsGeo, new THREE.PointsMaterial({color: 0xffffff, size: 0.15})));
+        scene.add(new THREE.Points(starsGeo, new THREE.PointsMaterial({color: 0xffffff, size: 0.2})));
         
-        // --- Аппарат (тор) ---
+        // --- ГРУППА АППАРАТА (будет двигаться) ---
+        const craftGroup = new THREE.Group();
+        scene.add(craftGroup);
+        
+        // --- Тор (аппарат) ---
         const craftGeo = new THREE.TorusGeometry(1.8, 0.5, 16, 48);
         const craftMat = new THREE.MeshStandardMaterial({ 
             color: 0x88aacc, 
@@ -98,10 +102,10 @@
         });
         const craft = new THREE.Mesh(craftGeo, craftMat);
         craft.rotation.x = Math.PI / 2;
-craft.rotation.z = 0.3;
-        scene.add(craft);
+        craft.rotation.z = 0.3;
+        craftGroup.add(craft);
         
-        // Центральная сфера (ядро)
+        // --- Центральная сфера (ядро) ---
         const coreGeo = new THREE.SphereGeometry(0.6, 24, 12);
         const coreMat = new THREE.MeshStandardMaterial({ color: 0xffaa88, emissive: 0x553322 });
         const core = new THREE.Mesh(coreGeo, coreMat);
@@ -109,12 +113,12 @@ craft.rotation.z = 0.3;
         
         // --- Поле вокруг аппарата (частицы) ---
         const fieldParticles = [];
-        const particleCount = 800;
+        const particleCount = 1000;
         const particleGeo = new THREE.BufferGeometry();
         const particlePositions = new Float32Array(particleCount * 3);
         
         for (let i = 0; i < particleCount; i++) {
-            const r = 2.5 + Math.random() * 2.0;
+            const r = 2.5 + Math.random() * 2.5;
             const theta = Math.random() * Math.PI * 2;
             const phi = Math.acos((Math.random() * 2) - 1);
             
@@ -132,20 +136,20 @@ craft.rotation.z = 0.3;
         particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
         const particleMat = new THREE.PointsMaterial({ 
             color: 0x88aaff, 
-            size: 0.08,
+            size: 0.1,
             transparent: true,
             blending: THREE.AdditiveBlending
         });
         const particles = new THREE.Points(particleGeo, particleMat);
-        craft.add(particles);
+        craftGroup.add(particles);
         
-        // --- Вектор тяги (стрелка) ---
-        const arrowDir = new THREE.Vector3(1, 0, 0);
-        const arrowOrigin = new THREE.Vector3(0, 0, 0);
+        // --- Вектор тяги (стрелка ВВЕРХ) ---
+        const arrowDir = new THREE.Vector3(0, 1, 0);
+        const arrowOrigin = new THREE.Vector3(0, -1.5, 0);
         const arrowLength = 2.0;
         const arrowColor = 0xff5500;
         const arrowHelper = new THREE.ArrowHelper(arrowDir, arrowOrigin, arrowLength, arrowColor);
-        craft.add(arrowHelper);
+        craftGroup.add(arrowHelper);
         
         // --- Когерентность ---
         let coherence = 0.0;
@@ -177,16 +181,15 @@ craft.rotation.z = 0.3;
                 coherence = Math.max(0.0, coherence - 0.003);
             }
             
-            // Смещение поля при когерентности (Z-принцип: поле сдвигается назад)
-            const offsetZ = coherence * 1.5;
+            // Смещение поля при когерентности (Z-принцип: поле сдвигается ВНИЗ)
+            const offsetY = -coherence * 2.0;
             const positions = particles.geometry.attributes.position.array;
             
             for (let i = 0; i < particleCount; i++) {
                 const base = fieldParticles[i];
-                // При высокой C поле смещается назад (по оси -Z)
                 positions[i*3] = base.baseX;
-                positions[i*3+1] = base.baseY;
-                positions[i*3+2] = base.baseZ - offsetZ;
+                positions[i*3+1] = base.baseY + offsetY;
+                positions[i*3+2] = base.baseZ;
             }
             particles.geometry.attributes.position.needsUpdate = true;
             
@@ -195,19 +198,23 @@ craft.rotation.z = 0.3;
             const color = new THREE.Color().setHSL(hue, 0.9, 0.5);
             particles.material.color.set(color);
             craft.material.emissiveIntensity = 0.3 + coherence * 0.8;
-// Тяга и ускорение (из меморандума)
-            const thrust = coherence * 0.005; // Н/кг
+            
+            // Тяга и ускорение (из меморандума)
+            const thrust = coherence * 0.008; // Н/кг
             const acceleration = thrust / 0.0098; // в g
             
-            // Движение аппарата
+            // Движение аппарата ВВЕРХ (по оси Y)
             if (coherence > 0.1) {
-                velocity.z += thrust * 0.01;
+                velocity.y += thrust * 0.015;
             }
             velocity.multiplyScalar(0.99);
-            craft.position.add(velocity);
+            craftGroup.position.y += velocity.y;
             
             // Обновление стрелки тяги
-            arrowHelper.setLength(thrust * 400, 0.2 * thrust * 400);
+            arrowHelper.setLength(thrust * 300, 0.2 * thrust * 300);
+            
+            // Камера следит за аппаратом (опционально)
+            controls.target.copy(craftGroup.position);
             
             // UI
             document.getElementById('c-value').textContent = coherence.toFixed(3);
