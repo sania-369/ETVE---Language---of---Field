@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌀 Токамак Симулятор (ЕТВП)</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #050510; font-family: 'Segoe UI', sans-serif; }
+        #info {
+            position: absolute; top: 20px; left: 20px; color: white;
+            background: rgba(0,0,0,0.6); padding: 15px 25px; border-radius: 8px;
+            pointer-events: none; z-index: 10;
+        }
+        #stats {
+            position: absolute; bottom: 30px; right: 30px; color: #fff;
+            background: rgba(0,0,0,0.6); padding: 15px 25px; border-radius: 8px;
+            pointer-events: none; z-index: 10; text-align: right;
+        }
+        .badge {
+            position: absolute; top: 20px; right: 30px; color: #aaa;
+            background: rgba(0,0,0,0.5); padding: 8px 16px; border-radius: 20px;
+            font-size: 14px; z-index: 10; pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="info">
+        <h2>🌀 Токамак: Удержание плазмы (ЕТВП)</h2>
+        <p>⚡ ПРОБЕЛ — повысить когерентность (C)</p>
+        <p>💡 Плазма ярче и стабильнее при высокой C</p>
+    </div>
+    <div id="stats">
+        <div>🌀 Когерентность (C): <span id="c-value">0.00</span></div>
+        <div>⏱️ Время удержания (τ_E): <span id="tau-value">0.00</span> с</div>
+    </div>
+    <div class="badge">
+        🔘 Резонанс: <span id="resonance-status">ВЫКЛ</span>
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        // --- Сцена ---
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x050510);
+        
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(10, 6, 15);
+        camera.lookAt(0, 0, 0);
+        
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+        
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.5;
+        controls.enableZoom = true;
+        controls.target.set(0, 0, 0);
+        
+        // --- Свет ---
+        scene.add(new THREE.AmbientLight(0x404060));
+        const light1 = new THREE.PointLight(0xffaa88, 1.0);
+        light1.position.set(8, 12, 8);
+        scene.add(light1);
+        const light2 = new THREE.PointLight(0x88aaff, 0.5);
+        light2.position.set(-8, 4, -10);
+        scene.add(light2);
+        
+        // --- Звёзды (фон) ---
+        const starsGeo = new THREE.BufferGeometry();
+        const starsPos = new Float32Array(2000 * 3);
+        for (let i = 0; i < 2000 * 3; i+=3) {
+            starsPos[i] = (Math.random() - 0.5) * 200;
+            starsPos[i+1] = (Math.random() - 0.5) * 200;
+            starsPos[i+2] = (Math.random() - 0.5) * 200;
+        }
+        starsGeo.setAttribute('position', new THREE.BufferAttribute(starsPos, 3));
+        scene.add(new THREE.Points(starsGeo, new THREE.PointsMaterial({color: 0xffffff, size: 0.15})));
+        
+        // --- Тор (вакуумная камера) ---
+        const torusGeo = new THREE.TorusGeometry(4.0, 1.2, 32, 64);
+        const torusMat = new THREE.MeshStandardMaterial({ 
+            color: 0x88aacc, 
+            transparent: true, 
+            opacity: 0.25,
+            wireframe: false,
+            side: THREE.DoubleSide
+        });
+const torus = new THREE.Mesh(torusGeo, torusMat);
+        torus.rotation.x = Math.PI / 2;
+        scene.add(torus);
+        
+        // Внешняя оболочка (каркас)
+        const wireframeTorus = new THREE.Mesh(
+            new THREE.TorusGeometry(4.0, 1.2, 16, 48),
+            new THREE.MeshBasicMaterial({ color: 0x88aaff, wireframe: true, transparent: true, opacity: 0.15 })
+        );
+        wireframeTorus.rotation.x = Math.PI / 2;
+        scene.add(wireframeTorus);
+        
+        // --- Плазма (внутренний светящийся шнур) ---
+        const plasmaGeo = new THREE.TorusGeometry(4.0, 0.8, 32, 64);
+        const plasmaMat = new THREE.MeshStandardMaterial({ 
+            color: 0xff5500, 
+            emissive: 0xff2200,
+            transparent: true, 
+            opacity: 0.7
+        });
+        const plasma = new THREE.Mesh(plasmaGeo, plasmaMat);
+        plasma.rotation.x = Math.PI / 2;
+        scene.add(plasma);
+        
+        // --- Магнитные катушки (кольца вокруг тора) ---
+        const coils = [];
+        const coilPositions = [
+            { angle: 0, y: 0 }, { angle: Math.PI/4, y: 0.5 }, { angle: Math.PI/2, y: 0 },
+            { angle: 3*Math.PI/4, y: -0.5 }, { angle: Math.PI, y: 0 }, { angle: 5*Math.PI/4, y: 0.5 },
+            { angle: 3*Math.PI/2, y: 0 }, { angle: 7*Math.PI/4, y: -0.5 }
+        ];
+        
+        coilPositions.forEach(pos => {
+            const coil = new THREE.Mesh(
+                new THREE.TorusGeometry(1.5, 0.1, 8, 24),
+                new THREE.MeshStandardMaterial({ color: 0xccaa88, emissive: 0x332211 })
+            );
+            coil.position.x = Math.cos(pos.angle) * 5.5;
+            coil.position.z = Math.sin(pos.angle) * 5.5;
+            coil.position.y = pos.y;
+            coil.rotation.y = pos.angle;
+            coil.rotation.x = Math.PI / 2;
+            scene.add(coil);
+            coils.push(coil);
+        });
+        
+        // --- Когерентность и удержание ---
+        let coherence = 0.0;
+        let tauE = 0.0;
+        let resonance = false;
+        
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                resonance = true;
+                document.getElementById('resonance-status').textContent = 'ВКЛ';
+                e.preventDefault();
+            }
+        });
+        window.addEventListener('keyup', (e) => {
+            if (e.code === 'Space') {
+                resonance = false;
+                document.getElementById('resonance-status').textContent = 'ВЫКЛ';
+                e.preventDefault();
+            }
+        });
+        
+        // --- Анимация ---
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            if (resonance) {
+                coherence = Math.min(0.999, coherence + 0.005);
+            } else {
+                coherence = Math.max(0.0, coherence - 0.002);
+            }
+            
+            // Время удержания зависит от когерентности (по нашему меморандуму)
+            tauE = 0.5 + coherence * 5.0;
+            
+            // Визуализация: плазма ярче и стабильнее при высокой C
+            const hue = 0.05 + coherence * 0.15;
+            const color = new THREE.Color().setHSL(hue, 1.0, 0.5);
+            plasma.material.color.set(color);
+            plasma.material.emissive.set(color);
+            plasma.material.emissiveIntensity = 0.5 + coherence * 1.5;
+            plasma.material.opacity = 0.5 + coherence * 0.3;
+            
+            // Пульсация плазмы (чем выше C, тем меньше амплитуда пульсаций)
+            const pulse = resonance ? 1.0 : 1.0 + 0.1 * (1 - coherence);
+            plasma.scale.setScalar(pulse);
+            
+            // Катушки тоже реагируют
+            coils.forEach((coil, idx) => {
+                coil.material.emissiveIntensity = 0.2 + coherence * 0.5;
+            });
+            
+            // Обновление UI
+            document.getElementById('c-value').textContent = coherence.toFixed(3);
+document.getElementById('tau-value').textContent = tauE.toFixed(2);
+            
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+        
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
