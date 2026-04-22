@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ LENR - Шаг 3.1 (Вибрация)</title>
+    <title>⚡ LENR - Шаг 3.2 (Движение ионов)</title>
     <style>
         body { margin: 0; overflow: hidden; background: #0a0a14; font-family: 'Segoe UI', sans-serif; }
         #info {
@@ -25,8 +25,8 @@
 </head>
 <body>
     <div id="info">
-        <h2>⚡ LENR: Шаг 3.1 (Вибрация атомов)</h2>
-        <p>🖱️ Клик — добавить ион | ⚡ ПРОБЕЛ — резонанс (атомы вибрируют)</p>
+        <h2>⚡ LENR: Шаг 3.2 (Движение ионов)</h2>
+        <p>🖱️ Клик — добавить ион | ⚡ ПРОБЕЛ — резонанс (ионы движутся)</p>
     </div>
     <div id="stats">
         <div>🌌 Ионов: <span id="ion-count">0</span></div>
@@ -84,7 +84,7 @@
                     const atom = new THREE.Mesh(atomGeo, atomMat.clone());
                     atom.position.set(i * spacing, j * spacing, k * spacing);
                     scene.add(atom);
-                    atoms.push({ mesh: atom });
+                    atoms.push({ mesh: atom, pos: atom.position.clone() });
                 }
             }
         }
@@ -94,9 +94,13 @@
         const ionMat = new THREE.MeshStandardMaterial({ color: 0xffaa00, emissive: 0x553300, emissiveIntensity: 0.6 });
         
         function addIon(x, y, z) {
-            const ion = new THREE.Mesh(ionGeo, ionMat.clone());
-            ion.position.set(x, y, z);
-            scene.add(ion);
+            const ion = {
+                mesh: new THREE.Mesh(ionGeo, ionMat.clone()),
+                pos: new THREE.Vector3(x, y, z),
+                vel: new THREE.Vector3(0, 0, 0)
+            };
+            ion.mesh.position.copy(ion.pos);
+            scene.add(ion.mesh);
             ions.push(ion);
             document.getElementById('ion-count').textContent = ions.length;
         }
@@ -147,6 +151,40 @@
                     item.mesh.scale.setScalar(1);
                     item.mesh.material.emissiveIntensity = 0.4;
                 }
+            });
+            
+            // ДВИЖЕНИЕ ИОНОВ
+            ions.forEach(ion => {
+                if (resonance) {
+                    let nearestAtom = null;
+                    let minDist = Infinity;
+                    atoms.forEach(atom => {
+                        const dist = ion.pos.distanceTo(atom.pos);
+                        if (dist < minDist) {
+                            minDist = dist;
+                            nearestAtom = atom;
+                        }
+                    });
+                    
+                    if (nearestAtom) {
+                        const dir = new THREE.Vector3().subVectors(nearestAtom.pos, ion.pos);
+                        const dist = dir.length();
+                        if (dist > 0.3) {
+                            dir.normalize();
+                            ion.vel.addScaledVector(dir, 0.0025);
+                        }
+                    }
+                    
+                    ion.mesh.material.emissive.setHex(0xff8800);
+                    ion.mesh.material.emissiveIntensity = 1.2;
+                } else {
+                    ion.mesh.material.emissive.setHex(0x553300);
+                    ion.mesh.material.emissiveIntensity = 0.6;
+                }
+                
+                ion.vel.multiplyScalar(0.95);
+                ion.pos.add(ion.vel);
+                ion.mesh.position.copy(ion.pos);
             });
             
             controls.update();
