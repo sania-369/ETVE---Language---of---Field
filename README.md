@@ -225,7 +225,6 @@ https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771233
 ### 📈 Доказательная база:
 1. **[ETVE_Universal_Integrator_v1.0_Operator_Coherent.py](./ETVE_Universal_Integrator_v1.0_Operator_Coherent.py)** — Основной инструмент расчета, использующий реальные параметры плазмы (Bt, Ip, R, ne).
 2. **[ETVE_Global_Verification_Matrix.webp](./ETVE_Global_Verification_Matrix.webp)** — Сравнение Tau_E: Модель ЕТВП vs Классический скейлинг.
-3. **[ETVE_Resonance_Correlation_Matrix.webp](./ETVE_Resonance_Correlation_Matrix.webp)** — Корреляция частоты резонанса и удержания.
 
 > **Результат:** Модель ЕТВП предсказывает стабильность ITER на уровне **5.2 сек** при достижении операторской когерентности, что подтверждает теорию о том, что плазма управляется через **Резонансный Язык Поля**, а не только грубую силу.
 
