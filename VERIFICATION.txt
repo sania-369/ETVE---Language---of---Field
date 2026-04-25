@@ -39,7 +39,14 @@ https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771418
 
 Доверять не нужно. Нужно проверять.
 
-Авторы оставляют за собой право на ошибку и приветствуют любую конструктивную критику, основанную на воспроизводимых расчётах.
+Веб-симуляторы (запуск в браузере, без установки):
+- FieldGame (визуализация когерентности Ψ-поля)
+- LENRSimulator (резонансная накачка, COP)
+- TokamakSimulator (удержание плазмы, Z-принцип)
+- FieldDriveSimulator (полевой двигатель)
+
+DOI: 10.5281/zenodo.19305307
+Прямая ссылка: https://zenodo.org/records/19305307
 
 GitHub: https://github.com/sania-369/ETVE---Language---of---Field
 Лицензия: CC BY 4.0
