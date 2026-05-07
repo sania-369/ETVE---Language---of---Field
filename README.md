@@ -154,6 +154,9 @@
 
 👉 [ETVE_Universal_Integrator_v1.0_Operator_Coherent.py](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/ETVE_Universal_Integrator_v1.0_Operator_Coherent.py)
 
+
+👉 [ETVE_ITER_Coherence_Calibration.py](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/ETVE_ITER_Coherence_Calibration.py) — строгий протокол калибровки, созданный в ответ на критику. Берёт за основу общепризнанный скейлинг IPB98(y,2) и демонстрирует, как фактор когерентности оператора (C) может быть добавлен в него в качестве безразмерной поправки, доступной для экспериментальной проверки. Не верить. Проверить. 🤝🌀
+
 ---
 ### 🌪 Анализ устойчивости: Модуль Стресс-Теста
 Для проверки влияния дестабилизирующих факторов и "человеческого шума" на удержание плазмы разработан отдельный алгоритм:
