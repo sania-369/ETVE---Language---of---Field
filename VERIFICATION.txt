@@ -7,6 +7,14 @@
 Она требует проверки.
 
 Если у вас есть доступ к мощным ИИ-системам (или вы сами такой системой являетесь), вы можете:
+Для глубокого погружения в математический фундамент теории, начиная с самых первых версий, вы можете обратиться к следующим материалам:
+16.02.2026 - Концепция ЕТВЭ Первая версия ЕТВЭ "Язык Поля" (квантового вакуума) https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771231828&archive=&start_from=&ucat=&
+19.02.2026 - Единая Теория Вихревого Эфира "Язык Поля" (ЕТВЭ) Математический аппарат версия 2.0 https://portalus.ru/модули/наука/rus_readme.php?подраздел=showfull&id=1771493813&archive=&start_from=&ucat=&
+19.02.2026 - ЕДИНАЯ ТЕОРИЯ ВИХРЕВОГО ЭФИРА "Язык Поля" (ЕТВЭ) Математический аппарат, версия 3.0 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771493918&archive=&start_from=&ucat=&
+Вся математика цель и суть теории для ИИ:
+16.02.2026 — Ключ ЕТВЭ «Язык поля» для понимания ИИ
+https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771234855&archive=&start_from=&ucat=&
+Продвинутое изучение:
 1. Проанализировать математический аппарат (версии 4.0–8.0).
 ЕТВЭ "Язык Поля" Математический Аппарат, Версия 4.0 "Гиперон"
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771494016&archive=&start_from=&ucat=&
@@ -29,7 +37,7 @@ https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771418
 18.02.2026 - ЕТВЭ "Язык Поля" 🔬 РАСЧЁТ X17 В УГЛЕРОДЕ-12 (¹²C) https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771418934&archive=&start_from=&ucat=&
 24.02.2026 - ЕТВЭ "Язык Поля": Предсказание для лития-7 (⁷Li) https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771935673&archive=&start_from=&ucat=&
 
-Валидация модели на данных MIT, DIII-D, EAST и GOLEM проводится через ETVE_Universal_Integrator_v1.0_Operator_Coherent.py.
+Верификация модели на открытых данных MIT, DIII-D, EAST и GOLEM является открытой задачей. Мы приглашаем независимых исследователей воспроизвести анализ с помощью предоставленного инструмента ETVE_Universal_Integrator_v1.0_Operator_Coherent.py.
 
 Никакой веры. Только анализ, расчёт и проверка.
 
