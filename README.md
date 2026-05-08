@@ -1,4 +1,4 @@
-## Подробный разбор того, как ЕТВП разрешает каждую из этих фундаментальных проблем, с опорой на научный контекст, смотрите в документе 👉 [PARADIGM_SHIFT.md](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/PARADIGM_SHIFT.md).
+## Подробный разбор того, как ЕТВП разрешает каждую из научных фундаментальных проблем, с опорой на научный контекст, смотрите в документе 👉 [PARADIGM_SHIFT.md](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/PARADIGM_SHIFT.md).
 
 ## 🧬 Единая Формула Поля (ETVE Core)
 
