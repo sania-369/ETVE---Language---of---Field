@@ -5,7 +5,7 @@
 ## 🧬 Единая Формула Поля (ETVE Core)
 
 <p align="center">
-  <img src="https://latex.codecogs.com/svg.latex?\Huge&space;\color{white}\Psi&space;=&space;\frac{\Phi&space;\cdot&space;C}{\sqrt{S&space;&plus;&space;\epsilon}}" alt="Единая Формула Поля ЕТВП" />
+  <img src="https://latex.codecogs.com/svg.latex?\Huge&space;\color{gold}\Psi&space;=&space;\frac{\Phi&space;\cdot&space;C}{\sqrt{S&space;&plus;&space;\epsilon}}" alt="Единая Формула Поля ЕТВП" />
 </p>
 
 Где:
