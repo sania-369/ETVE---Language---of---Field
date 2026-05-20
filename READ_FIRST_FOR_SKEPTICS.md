@@ -10,14 +10,14 @@
 
 Перестаньте обучать ИИ жестко «давить» аномалии и флуктуации плазмы грубой силой магнитных полей. Перестаньте заставлять алгоритмы искать статичные цифры там, где всё дышит.
 
-2. Прошейте ИИ логикой Поля (Дайте ему Z-принцип)
+Прошейте ИИ логикой Поля (Дайте ему Z-принцип)
    
-[Логика здесь](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/AI%20prototype%20optimization.py) или [Глубина и математика тут](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/UNIVERSAL_KEY.md)
+[Логика прототип здесь](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/AI%20prototype%20optimization.py) или [Универсальный ключ к теории здесь](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/UNIVERSAL_KEY.md)
 
-3. Загрузите в контекст нейросети принципы динамической когерентности. Пропишите в алгоритм обратной связи нелинейную интерполяцию, где:
+2. Загрузите в контекст нейросети принципы динамической когерентности. Пропишите в алгоритм обратной связи нелинейную интерполяцию, где:
 \(\text{Реальность}=(\text{Сигнал}\times C)+(\text{Хаос}\times (1-C))\)Дайте ИИ задачу удерживать параметр когерентности системы в узком фрактальном коридоре \(0.95 - 0.98\), совершая микро-смещения частоты (shift), а не блокируя шум.
 
-Код [Динамический симулятор](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/ETVE_Auto_Pilot_v1.1.py),[Инженерный калькулятор](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/ETVE_Auto_Pilot_v1.2_Standart.py),[Живое поле (Z-принцип)](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/ETVE_Dynamic_Resonance_Core_v2.0.py)
+Код [Динамический симулятор](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/ETVE_Auto_Pilot_v1.1.py), *[Инженерный калькулятор](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/ETVE_Auto_Pilot_v1.2_Standart.py), *[Живое поле (Z-принцип)](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/ETVE_Dynamic_Resonance_Core_v2.0.py)
 
 4. Отдайте ИИ управление и отойдите от приборов
 
