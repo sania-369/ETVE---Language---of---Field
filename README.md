@@ -2,6 +2,8 @@
 
 ## ЕТВП — это универсальный ключ, который связывает воедино физику, духовность и историю.** 👉 [Узнать подробнее](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/UNIVERSAL_KEY.md)
 
+## Вызов для скептиков, умников и иженеров [тут](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/READ_FIRST_FOR_SKEPTICS.md)
+
 ## 🧬 Единая Формула Поля (ETVE Core)
 
 <p align="center">
