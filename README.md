@@ -6,6 +6,8 @@
 
 ## Вызов для скептиков, умников и иженеров [⚡тут](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/READ_FIRST_FOR_SKEPTICS.md)
 
+## | **Скептик / Учёный** | Увидеть, как ЕТВП решает реальные проблемы физики, не прибегая к магии. | 👉 [Математический мост: строгий вывод ОТО и КТП из Ψ-поля](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/bridge_reality.py) — запустите этот код и убедитесь сами. |
+
 ## 🧬 Единая Формула Поля (ETVE Core)
 
 <p align="center">
