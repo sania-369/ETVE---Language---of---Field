@@ -166,3 +166,85 @@ print("\n=== ИТОГ ===")
 print("1. Предсказания ЕТВП (золотое сечение + геометрия решетки) совпадают с экспериментом с погрешностью 5–7%.")
 print("2. Обертоны объясняются нелинейным откликом поля на вакансиях (удвоение частоты).")
 print("3. ИИ-контроллер способен удерживать систему в резонансе, что критически важно для практической реализации LENR.")
+
+ИИ-контроллер для Pd-D системы.
+
+import numpy as np
+import time
+
+class LENR_Resonance_Controller(ETVEDynamicResonance):
+    """
+    Расширение ETVEDynamicResonance для управления частотой LENR-генератора.
+    """
+    def __init__(self, target_freq=8.4, freq_range=(8.0, 9.0), step=0.001):
+        super().__init__(target=0.965)   # Родительский класс для когерентности
+        self.freq = target_freq          # Текущая частота, ТГц
+        self.target_freq = target_freq   # Целевой резонанс
+        self.freq_range = freq_range
+        self.step = step
+        self.history = []                # Запись частот для анализа
+
+    def measure_response(self, freq):
+        """
+        Здесь должен быть реальный запрос к датчикам:
+        - Термопара (температура)
+        - Счётчик Гейгера (нейтроны)
+        - Или хотя бы имитация с шумом.
+        """
+        # Имитация лоренцевского пика с центром в self.target_freq
+        gamma = 0.3  # ширина пика, ТГц
+        signal = 100 / (1 + ((freq - self.target_freq) / gamma)**2)
+        noise = np.random.normal(0, 5)   # шум измерений
+        return max(0, signal + noise)
+
+    def update_frequency(self):
+        """
+        Подстройка частоты по градиенту отклика.
+        Использует текущее значение когерентности C из родительского класса.
+        """
+        # Измеряем отклик на текущей и слегка сдвинутой частоте
+        r0 = self.measure_response(self.freq)
+        r_plus = self.measure_response(self.freq + self.step)
+        grad = (r_plus - r0) / self.step   # численный градиент
+
+        # Шаг зависит от когерентности C: чем выше C, тем смелее подстройка
+        # Но C у нас в диапазоне 0.95–0.98, поэтому коэффициент примерно 0.5–1
+        step_size = self.step * (self.current_coherence * 0.5 + 0.5)
+        self.freq += step_size * np.sign(grad)
+        self.freq = np.clip(self.freq, self.freq_range[0], self.freq_range[1])
+        self.history.append(self.freq)
+
+    def run(self, steps=500):
+        for _ in range(steps):
+            # 1. Обновляем когерентность C на основе "внешней энтропии"
+            #    В реальности external_entropy можно связать с шумом датчиков.
+            external_noise = np.random.uniform(0, 0.1)
+            self.get_coherence(external_entropy=external_noise)
+
+            # 2. Подстраиваем частоту
+            self.update_frequency()
+
+            # 3. Имитация реального времени
+            time.sleep(0.01)
+
+        return self.history
+
+# ============================================================
+# ЗАПУСК И ВИЗУАЛИЗАЦИЯ
+# ============================================================
+if __name__ == "__main__":
+    controller = LENR_Resonance_Controller(target_freq=8.4, step=0.0005)
+    freq_trace = controller.run(steps=300)
+
+    import matplotlib.pyplot as plt
+    plt.plot(freq_trace)
+    plt.axhline(8.4, color='red', linestyle='--', label='Целевой резонанс 8.4 ТГц')
+    plt.xlabel('Шаг итерации')
+    plt.ylabel('Частота (ТГц)')
+    plt.title('Удержание резонанса Pd-D с помощью ETVEDynamicResonance')
+    plt.legend()
+    plt.grid()
+    plt.show()
+
+    print(f"Средняя частота в конце: {np.mean(freq_trace[-50:]):.4f} ТГц")
+    print(f"Средняя когерентность C: {controller.current_coherence:.4f}")
