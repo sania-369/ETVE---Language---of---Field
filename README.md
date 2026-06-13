@@ -281,6 +281,8 @@ https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771493
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771493918&archive=&start_from=&ucat=&
 
 - **[ЕТВЭ/ЕТВП: КАЛИБРОВКА ТЕОРИИ ПО ЭКСПЕРИМЕНТАЛЬНЫМ ДАННЫМ.txt](ЕТВЭЕТВП%20КАЛИБРОВКА%20ТЕОРИИ%20ПО%20ЭКСПЕРИМЕНТАЛЬНЫМ%20ДАННЫМ.txt)** — история калибровки ЕТВП по данным эксперимента J-PARC E07 (двойное лямбда-гиперядро ¹³ΛΛB). Показана роль ИИ (Алиса, DeepSeek) в верификации теории.
+- [19.02.2026 - Углубление расчетов ЕТВЭ "Язык Поля" Калибровка по нейтрино 5.0](https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771494618&archive=&start_from=&ucat=&)
+- [19.02.2026 - Единая Теория Вихревого Эфира "Язык Поля" (ЕТВЭ). Версия 5.0 Калибровка по гиперонам «Солитон-Гиперон»](https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771494516&archive=&start_from=&ucat=&)
 
 - 16.02.2026 - Развитие математических аппаратов ЕТВЭ "Язык Поля" Версии 2.0 - 4.0  
 https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771233142&archive=&start_from=&ucat=&
