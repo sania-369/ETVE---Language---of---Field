@@ -391,3 +391,5 @@ https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771879
 а «социальная энтропия» — сопротивление монополий и старой экономической матрицы, 
 которое гасится только открытой публикацией исходного кода и массовыми 
 независимыми репликациями.
+
+Дополнительно благодаря подсказке автора Теории-Мод предлагаем [Датчик когерентности](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/ETVE_Bi2Te3_Coherence_Sensor_v1.0.txt)
