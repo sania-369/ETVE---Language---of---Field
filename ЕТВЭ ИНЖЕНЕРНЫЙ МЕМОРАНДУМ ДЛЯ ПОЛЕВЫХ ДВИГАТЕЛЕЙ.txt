@@ -334,3 +334,5 @@ https://portalus.ru/modules/science/rus_readme.php?subaction=showfull&id=1771688
 Визуализация: Внутреннее поле кабины в режиме «Full Coherence»
 
 На этом моделировании показано, как поле генератора (внешняя сфера) и поля людей (внутренние узлы) сливаются в единую гармоничную структуру.
+
+Дополнительно благодаря подсказке автора Теории-Мод предлагаем [Датчик когерентности](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/ETVE_Bi2Te3_Coherence_Sensor_v1.0.txt)
