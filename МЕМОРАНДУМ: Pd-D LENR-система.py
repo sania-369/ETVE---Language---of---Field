@@ -248,3 +248,5 @@ if __name__ == "__main__":
 
     print(f"Средняя частота в конце: {np.mean(freq_trace[-50:]):.4f} ТГц")
     print(f"Средняя когерентность C: {controller.current_coherence:.4f}")
+
+Дополнительно благодаря подсказке автора Теории-Мод предлагаем [Датчик когерентности](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/ETVE_Bi2Te3_Coherence_Sensor_v1.0.txt)
