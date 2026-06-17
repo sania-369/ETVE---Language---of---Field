@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>🌀 Геометрия Бесконечности ЕТВЭ (v10.0)</title>
+    <style>
+        body { margin: 0; overflow: hidden; font-family: 'Segoe UI', sans-serif; background: #020208; }
+        #overlay-ui {
+            position: absolute; top: 20px; left: 20px; color: white;
+            background: rgba(5, 5, 15, 0.75); padding: 15px 25px;
+            border-radius: 20px; backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.15); z-index: 10; pointer-events: none;
+        }
+        h2 { margin: 0 0 10px 0; font-size: 20px; color: #88aaff; letter-spacing: 1px; }
+        p { margin: 5px 0; font-size: 14px; color: #ddd; }
+        .highlight { color: #55ffaa; font-weight: bold; }
+        #instructions {
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            color: #8899aa; background: rgba(0,0,0,0.6); padding: 8px 20px;
+            border-radius: 30px; font-size: 13px; pointer-events: none; z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="overlay-ui">
+        <h2>♾️ Пульсация Бесконечности (ЕТВЭ)</h2>
+        <p>Когерентность Поля (C): <span id="coh-display" class="highlight">0.9500</span></p>
+        <p>Режим Z-Принципа: <span id="z-display" style="color: #ffaa44;">Активен (ε = 10⁻¹⁵)</span></p>
+        <p>Фаза Вселенной: <span id="phase-display" style="color: #44aaff;">Автоколебания вакуума</span></p>
+    </div>
+
+    <div id="instructions">
+        🖱️ Зажми ЛКМ и двигай мышь, чтобы вращать бесконечность в 3D | Колёсико — зум
+    </div>
+
+    <!-- Подключение Three.js для 3D графики -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        // --- Инициализация сцены ---
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x020206);
+
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 8, 20);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        document.body.appendChild(renderer.domElement);
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.3;
+
+        // --- Константы ЕТВЭ ---
+        const PHI = 1.61803398875; // Золотое сечение
+        let coherence = 0.95;       // Стартовая когерентность
+        let timeAccumulated = 0;   // Время поля
+        let dt = 0.01;
+
+        // --- Создание объектов сцены ---
+        // Точки, которые будут бежать по траектории бесконечности (кванты поля)
+        const particleCount = 400;
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+        const colors = new Float32Array(particleCount * 3);
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+        // Светящаяся текстура для квантов поля
+        const pMaterial = new THREE.PointsMaterial({
+            size: 0.35,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.85,
+            blending: THREE.AdditiveBlending
+        });
+
+        const particleSystem = new THREE.Points(geometry, pMaterial);
+        scene.add(particleSystem);
+
+        // Внутреннее пространственное свечение в центре (точка сингулярности)
+const glowGeo = new THREE.SphereGeometry(1.5, 32, 32);
+        const glowMat = new THREE.MeshBasicMaterial({
+            color: 0x4466ff,
+            transparent: true,
+            opacity: 0.15,
+            blending: THREE.AdditiveBlending
+        });
+        const centerGlow = new THREE.Mesh(glowGeo, glowMat);
+        scene.add(centerGlow);
+
+        // Элементы UI
+        const cohSpan = document.getElementById('coh-display');
+        const phaseSpan = document.getElementById('phase-display');
+
+        // --- Главный цикл анимации (Дыхание Вакуума) ---
+        function animate() {
+            requestAnimationFrame(animate);
+
+            timeAccumulated += dt;
+
+            // 1. Математика Автоколебаний ЕТВЭ (v10.0-Infinitum)
+            let fieldDensity = Math.sin(timeAccumulated * PHI) * 0.5 + 0.5;
+            let orderDrive = PHI * fieldDensity * (1.0 - coherence);
+            
+            // Геометрическое сопротивление вихря (кривизна откатывает порядок назад)
+            let curvatureR = Math.abs(Math.cos(timeAccumulated)) * 0.4; 
+            let chaosBacklash = curvatureR * coherence;
+
+            let dC_dt = orderDrive - chaosBacklash;
+            coherence += dC_dt * dt;
+
+            // Жесткий Z-Принцип (Зазор жизни эпсилон)
+            if (coherence >= 1.0) {
+                coherence = 1.0 - 1e-15;
+            } else if (coherence < 0.5) {
+                coherence = 0.5; // Нижний стабилизатор поля
+            }
+
+            // Динамический масштаб лемнискаты зависит от текущей когерентности
+            let scale = 12.0 * (coherence / (1.0 + Math.pow(1.0 - coherence, 2)));
+
+            // Update UI
+            cohSpan.textContent = coherence.toFixed(5);
+            phaseSpan.textContent = dC_dt > 0 ? "Расширение (Вдох Порядка)" : "Сжатие (Откат в Хаос)";
+            phaseSpan.style.color = dC_dt > 0 ? "#55ffaa" : "#ff5577";
+
+            // Пульсация центрального ядра
+            centerGlow.scale.setScalar(1.0 + (1.0 - coherence) * 3);
+            centerGlow.material.color.setHSL(0.5 + coherence * 0.15, 1.0, 0.5);
+
+            // 2. Расчет координат Лемнискаты Бернулли по коду ЕТВЭ
+            const posArr = particleSystem.geometry.attributes.position.array;
+            const colArr = particleSystem.geometry.attributes.color.array;
+
+            for (let i = 0; i < particleCount; i++) {
+                // Сдвиг фазы для каждой точки, чтобы они плавно распределялись по восьмерке
+                let pointTime = timeAccumulated * PHI + (i * 0.05);
+                
+                // Параметрические уравнения бесконечности
+                let denom = 1.0 + Math.pow(Math.sin(pointTime), 2);
+                let x = (scale * Math.cos(pointTime)) / denom;
+                let z = (scale * Math.sin(pointTime) * Math.cos(pointTime)) / denom;
+                
+                // Добавляем микро-флуктуации (хаос вакуума), объем которых тает при росте когерентности
+                let microChaos = (1.0 - coherence) * 0.8;
+                let y = Math.sin(pointTime * 2) * (scale * 0.15) + (Math.sin(i + timeAccumulated) * microChaos);
+
+                let idx = i * 3;
+                posArr[idx] = x;
+                posArr[idx + 1] = y; // Траектория приподнимается в 3D пространстве
+                posArr[idx + 2] = z;
+
+                // Цветовая гамма меняется фрактально от золотого к бирюзовому в зависимости от когерентности
+                let hue = 0.5 + (coherence * 0.15) + (Math.sin(pointTime * 0.5) * 0.05);
+                let color = new THREE.Color().setHSL(hue, 0.9, 0.4 + (1.0 - coherence) * 0.2);
+                
+                colArr[idx] = color.r;
+                colArr[idx + 1] = color.g;
+                colArr[idx + 2] = color.b;
+            }
+
+            particleSystem.geometry.attributes.position.needsUpdate = true;
+            particleSystem.geometry.attributes.color.needsUpdate = true;
+
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        animate();
+// Автоподстройка под размеры экрана
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
