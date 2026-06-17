@@ -86,7 +86,7 @@
 
 ЕТВП — это не замена. Это долгожданное Единство.
 
-# ЕТВП — это научное и философское описание и объяснение сути и логики Бесконечности. [Мост к Бесконечности](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/v10.0-Infinitum.py) и визуализация: [Как дышит бесконечность](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/index.html)
+# ЕТВП — это научное и философское описание и объяснение сути и логики Бесконечности. [Мост к Бесконечности](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/v10.0-Infinitum.py) и визуализация: [Как дышит бесконечность](https://sania-369.github.io/ETVE---Language---of---Field/Infinity-breath/)
 
 # 🌀 ETVE — Language of Field (Единая Теория Вихревого Поля)
 
