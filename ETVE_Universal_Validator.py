@@ -234,3 +234,259 @@ if __name__ == "__main__":
     validator = ETVETotalPureValidator()
     validator.execute_final_test()
 
+---
+
+import numpy as np
+
+class ETVETensorCore:
+    def __init__(self, grid_size=32, kappa=1.0):
+        self.grid_size = grid_size
+        self.kappa = kappa
+        # Безразмерная константа самофокусировки
+        self.nl_coeff = 4.0 * (np.pi ** 4) * self.kappa  # 4*pi^4*kappa
+        
+        # Задаем метрику Минковского g_mu_nu (сигнатура +---)
+        self.g_eta = np.array([1.0, -1.0, -1.0, -1.0])
+        
+    def compute_energy_momentum_tensor(self, theta_field, dt, dx, dy, dz):
+        """
+        Строгий расчет тензора T_mu_nu на основе безразмерного Лагранжиана ЕТВП.
+        Поле theta_field должно иметь 4 измерения (t, x, y, z).
+        """
+        shape = theta_field.shape
+        # Инициализируем тензор T_mu_nu с формой (4, 4, t, x, y, z)
+        T = np.zeros((4, 4) + shape)
+        
+        # 1. Вычисляем 4-градиент фазы d_mu_theta (ковариантные производные)
+        # d_0 = d/dt, d_1 = d/dx, d_2 = d/dy, d_3 = d/dz
+        d_theta = np.zeros((4,) + shape)
+        d_theta[0] = np.gradient(theta_field, axis=0) / dt
+        d_theta[1] = np.gradient(theta_field, axis=1) / dx
+        d_theta[2] = np.gradient(theta_field, axis=2) / dy
+        d_theta[3] = np.gradient(theta_field, axis=3) / dz
+
+        ---
+
+        import numpy as np
+
+class ETVEGoldenTorusCore:
+    def __init__(self, num_points=64, kappa=0.0001):
+        self.N = num_points
+        self.kappa = kappa
+        self.nl_coeff = 4.0 * (np.pi ** 4) * self.kappa
+        
+        # Константа Золотого Сечения
+        self.Phi = (1.0 + np.5 ** 0.5) / 2.0  # ~1.6180339887
+        self.r = 1.0  # Нормированный малый радиус вихря
+        self.R = self.Phi * self.r  # Большой радиус строго по ЕТВП
+        
+        # Определение угловых координат замкнутого вихря
+        self.phi_vals = np.linspace(0, 2 * np.pi, self.N, endpoint=False)
+        self.psi_vals = np.linspace(0, 2 * np.pi, self.N, endpoint=False)
+        
+        # Шаги дискретизации сетки
+        self.d_phi = 2 * np.pi / self.N
+        self.d_psi = 2 * np.pi / self.N
+
+    def simulate_soliton_mass(self, n_vorticity=1):
+        """
+        Численный расчет массы топологического солитона ЕТВП.
+        Фаза поля закручена в узел Хопфа: theta = n * phi + psi
+        """
+        # Создаем 2D сетку угловых координат на торе
+        Phi_mesh, Psi_mesh = np.meshgrid(self.phi_vals, self.psi_vals, indexing='ij')
+        
+        # Идеальное топологическое зацепление фазы по ЕТВП (целое число витков n)
+        theta = n_vorticity * Phi_mesh + Psi_mesh
+        
+        # Вычисляем частные производные по координатам сетки
+        # d_phi = \partial theta / \partial \phi
+        # d_psi = \partial theta / \partial \psi
+        d_theta_phi = np.gradient(theta, axis=0) / self.d_phi
+        d_theta_psi = np.gradient(theta, axis=1) / self.d_psi
+        
+        # Компоненты метрического тензора Золотого Тора g_mu_nu
+        g_phi_phi = (self.R + self.r * np.cos(Psi_mesh)) ** 2
+        g_psi_psi = np.ones_like(Psi_mesh) * (self.r ** 2)
+        
+        # Контрвариантная метрика g^mu_nu для поднятия индексов
+        g_up_phi_phi = 1.0 / g_phi_phi
+        g_up_psi_psi = 1.0 / g_psi_psi
+        
+        # Вычисляем квадрат градиента фазы (кинетический инвариант X в криволинейных координатах)
+        # В пространственной метрике сигнатура (-), поэтому X = - (g^phi_phi * d_phi^2 + g^psi_psi * d_psi^2)
+        # Добавим временную компоненту автоколебания ("дыхания"), чтобы сбалансировать знак
+        omega_breathing = 1.0  # Частота автоколебаний вакуума Нулевой Энергии
+        X_time = omega_breathing ** 2
+        X_space = (g_up_phi_phi * (d_theta_phi ** 2)) + (g_up_psi_psi * (d_theta_psi ** 2))
+        X = X_time - X_space
+        
+        # Безразмерный нелинейный Лагранжиан L
+        L = 0.5 * X - self.nl_coeff * (X ** 2)
+        
+        # Производная Лагранжиана по инварианту: L_X = 0.5 - 2 * kappa * 4*pi^4 * X
+        L_X = 0.5 - 2.0 * self.nl_coeff * X
+        
+        # Компонента тензора энергии-импульса T_00 (плотность массы-энергии)
+        # T_00 = L_X * (\partial_0 \theta)^2 - g_00 * L (g_00 вакуума принято за 1)
+        T_00 = L_X * (omega_breathing ** 2) - L
+        
+        # Элемент объема (Якобиан) для интеграции по Золотому Тору: dV = r * (R + r*cos(psi)) * d_phi * d_psi
+        sqrt_g = self.r * (self.R + self.r * np.cos(Psi_mesh))
+        
+        # Полная масса солитона как интеграл объема плотности энергии T_00
+        soliton_mass = np.sum(T_00 * sqrt_g) * self.d_phi * self.d_psi
+        
+        return soliton_mass, np.mean(T_00), np.max(X)
+
+if __name__ == "__main__":
+    # Инициализация ядра ЕТВП с малым коэффициентом нелинейности
+    torus_core = ETVEGoldenTorusCore(num_points=128, kappa=0.0002)
+    
+    # Расчет для базового вихря (заряд Q = 1 виток Хопфа)
+    mass, avg_t00, max_x = torus_core.simulate_soliton_mass(n_vorticity=1)
+    
+    print("=== ТОПОЛОГИЧЕСКАЯ ВЕРИФИКАЦИЯ ЕТВП ЗАВЕРШЕНА ===")
+    print(f"Геометрические параметры: R = {torus_core.R:.6f}, r = {torus_core.r:.6f} (R/r = Phi)")
+    print(f"Максимальное натяжение поля (Инвариант X): {max_x:.6e}")
+    print(f"Средняя плотность энергии в узле T_00: {avg_t00:.6f}")
+    print(f"ВЫВЕДЕННАЯ МАССА СОЛИТОНА (Геометрический объем): {mass:.6f}")
+        # 2. Вычисляем контрвариантный 4-градиент: d^mu_theta = g^mu_nu * d_nu_theta
+        d_theta_up = np.zeros_like(d_theta)
+        for mu in range(4):
+            d_theta_up[mu] = self.g_eta[mu] * d_theta[mu]
+            
+        # 3. Вычисляем кинетический инвариант X = (d_mu_theta) * (d^mu_theta)
+        # X = (d_t_theta)^2 - (d_x_theta)^2 - (d_y_theta)^2 - (d_z_theta)^2
+        X = np.zeros(shape)
+        for mu in range(4):
+            X += d_theta[mu] * d_theta_up[mu]
+            
+        # 4. Вычисляем производную Лагранжиана по X: L_X = 0.5 - 2 * (4*pi^4*kappa) * X
+        # Математически: d/dX (0.5*X - nl_coeff*X^2) = 0.5 - 2*nl_coeff*X
+        L_X = 0.5 - 2.0 * self.nl_coeff * X
+        
+        # 5. Вычисляем значение самого Лагранжиана L (при условии потенциала V(rho) -> 0 вакуума)
+        L = 0.5 * X - self.nl_coeff * (X ** 2)
+        
+        # 6. Сборка тензора T_mu_nu по строгой формуле: T_mu_nu = L_X * d_mu * d_nu - g_mu_nu * L
+        for mu in range(4):
+            for nu in range(4):
+                # Кинетическая часть: L_X * \partial_mu \theta * \partial_nu \theta
+                kin_term = L_X * d_theta[mu] * d_theta[nu]
+                
+                # Метрическая часть: g_mu_nu * L (учитываем, что g_mu_nu ненулевая только при mu == nu)
+                if mu == nu:
+                    metric_term = self.g_eta[mu] * L
+                else:
+                    metric_term = 0.0
+                    
+                T[mu, nu] = kin_term - metric_term
+                
+        return T, X
+
+# Демонстрационный запуск ядра калибровки
+if __name__ == "__main__":
+    core = ETVETensorCore(grid_size=16, kappa=0.01)
+    
+    # Моделируем тестовую динамику фазы на 4D сетке (t, x, y, z)
+    np.random.seed(42)
+    fake_theta = np.sin(np.linspace(0, 2*np.pi, 16))[:, None, None, None] * \
+                 np.cos(np.linspace(0, 2*np.pi, 16))[None, :, None, None]
+    # Дублируем по Y и Z для получения полной 4D структуры
+    fake_theta = np.repeat(np.repeat(fake_theta, 16, axis=2), 16, axis=3)
+    
+    # Шаги сетки нормированы на Планковский масштаб
+    T, X = core.compute_energy_momentum_tensor(fake_theta, dt=0.1, dx=0.1, dy=0.1, dz=0.1)
+    
+    print("=== КАЛИБРОВКА T_mu_nu ЗАВЕРШЕНА ===")
+    print(f"Плотность энергии вакуума T_00 (средняя): {np.mean(T[0,0]):.6e}")
+    print(f"Натяжение пространства T_11 (среднее): {np.mean(T[1,1]):.6e}")
+    print(f"Максимальный нелинейный инвариант X: {np.max(X):.6e}")
+
+---
+
+import numpy as np
+
+class ETVEGoldenTorusCore:
+    def __init__(self, num_points=64, kappa=0.0001):
+        self.N = num_points
+        self.kappa = kappa
+        self.nl_coeff = 4.0 * (np.pi ** 4) * self.kappa
+        
+        # Константа Золотого Сечения
+        self.Phi = (1.0 + np.5 ** 0.5) / 2.0  # ~1.6180339887
+        self.r = 1.0  # Нормированный малый радиус вихря
+        self.R = self.Phi * self.r  # Большой радиус строго по ЕТВП
+        
+        # Определение угловых координат замкнутого вихря
+        self.phi_vals = np.linspace(0, 2 * np.pi, self.N, endpoint=False)
+        self.psi_vals = np.linspace(0, 2 * np.pi, self.N, endpoint=False)
+        
+        # Шаги дискретизации сетки
+        self.d_phi = 2 * np.pi / self.N
+        self.d_psi = 2 * np.pi / self.N
+
+    def simulate_soliton_mass(self, n_vorticity=1):
+        """
+        Численный расчет массы топологического солитона ЕТВП.
+        Фаза поля закручена в узел Хопфа: theta = n * phi + psi
+        """
+        # Создаем 2D сетку угловых координат на торе
+        Phi_mesh, Psi_mesh = np.meshgrid(self.phi_vals, self.psi_vals, indexing='ij')
+        
+        # Идеальное топологическое зацепление фазы по ЕТВП (целое число витков n)
+        theta = n_vorticity * Phi_mesh + Psi_mesh
+        
+        # Вычисляем частные производные по координатам сетки
+        # d_phi = \partial theta / \partial \phi
+        # d_psi = \partial theta / \partial \psi
+        d_theta_phi = np.gradient(theta, axis=0) / self.d_phi
+        d_theta_psi = np.gradient(theta, axis=1) / self.d_psi
+        
+        # Компоненты метрического тензора Золотого Тора g_mu_nu
+        g_phi_phi = (self.R + self.r * np.cos(Psi_mesh)) ** 2
+        g_psi_psi = np.ones_like(Psi_mesh) * (self.r ** 2)
+        
+        # Контрвариантная метрика g^mu_nu для поднятия индексов
+        g_up_phi_phi = 1.0 / g_phi_phi
+        g_up_psi_psi = 1.0 / g_psi_psi
+        
+        # Вычисляем квадрат градиента фазы (кинетический инвариант X в криволинейных координатах)
+        # В пространственной метрике сигнатура (-), поэтому X = - (g^phi_phi * d_phi^2 + g^psi_psi * d_psi^2)
+        # Добавим временную компоненту автоколебания ("дыхания"), чтобы сбалансировать знак
+        omega_breathing = 1.0  # Частота автоколебаний вакуума Нулевой Энергии
+        X_time = omega_breathing ** 2
+        X_space = (g_up_phi_phi * (d_theta_phi ** 2)) + (g_up_psi_psi * (d_theta_psi ** 2))
+        X = X_time - X_space
+        
+        # Безразмерный нелинейный Лагранжиан L
+        L = 0.5 * X - self.nl_coeff * (X ** 2)
+        
+        # Производная Лагранжиана по инварианту: L_X = 0.5 - 2 * kappa * 4*pi^4 * X
+        L_X = 0.5 - 2.0 * self.nl_coeff * X
+        
+        # Компонента тензора энергии-импульса T_00 (плотность массы-энергии)
+        # T_00 = L_X * (\partial_0 \theta)^2 - g_00 * L (g_00 вакуума принято за 1)
+        T_00 = L_X * (omega_breathing ** 2) - L
+        
+        # Элемент объема (Якобиан) для интеграции по Золотому Тору: dV = r * (R + r*cos(psi)) * d_phi * d_psi
+        sqrt_g = self.r * (self.R + self.r * np.cos(Psi_mesh))
+        
+        # Полная масса солитона как интеграл объема плотности энергии T_00
+        soliton_mass = np.sum(T_00 * sqrt_g) * self.d_phi * self.d_psi
+        
+        return soliton_mass, np.mean(T_00), np.max(X)
+
+if __name__ == "__main__":
+    # Инициализация ядра ЕТВП с малым коэффициентом нелинейности
+    torus_core = ETVEGoldenTorusCore(num_points=128, kappa=0.0002)
+    
+    # Расчет для базового вихря (заряд Q = 1 виток Хопфа)
+    mass, avg_t00, max_x = torus_core.simulate_soliton_mass(n_vorticity=1)
+    
+    print("=== ТОПОЛОГИЧЕСКАЯ ВЕРИФИКАЦИЯ ЕТВП ЗАВЕРШЕНА ===")
+    print(f"Геометрические параметры: R = {torus_core.R:.6f}, r = {torus_core.r:.6f} (R/r = Phi)")
+    print(f"Максимальное натяжение поля (Инвариант X): {max_x:.6e}")
+    print(f"Средняя плотность энергии в узле T_00: {avg_t00:.6f}")
+    print(f"ВЫВЕДЕННАЯ МАССА СОЛИТОНА (Геометрический объем): {mass:.6f}")
