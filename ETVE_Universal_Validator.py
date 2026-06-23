@@ -533,3 +533,56 @@ def compute_field_tensor_T_mu_nu(self, theta_field, dt, dx, dy, dz):
                 T[mu, nu] = kin_term - metric_term
                 
         return T
+
+---
+
+import numpy as np
+
+def compute_etve_tensor_t_mu_nu(theta_4d_field, dt, dx, dy, dz, kappa_derived):
+    """
+    СТРОГИЙ МАТЕМАТИЧЕСКИЙ АППАРАТ ЕТВП v8.2 ДЛЯ АКАДЕМИЧЕСКИХ УЧЕНЫХ.
+    Вычисление 4D тензора энергии-импульса T_{\mu\nu} из динамики скалярного поля фазы.
+    
+    Сетка поля theta_4d_field имеет размерность (T, X, Y, Z).
+    """
+    shape = theta_4d_field.shape
+    # Инициализируем тензор 4x4 для каждой точки пространства-времени
+    T_tensor = np.zeros((4, 4) + shape)
+    
+    # 1. Вычисляем ковариантные производные \partial_\mu \theta (4-градиент)
+    d_theta = np.zeros((4,) + shape)
+    d_theta[0] = np.gradient(theta_4d_field, axis=0) / dt  # \partial_0 (Время)
+    d_theta[1] = np.gradient(theta_4d_field, axis=1) / dx  # \partial_1 (X)
+    d_theta[2] = np.gradient(theta_4d_field, axis=2) / dy  # \partial_2 (Y)
+    d_theta[3] = np.gradient(theta_4d_field, axis=3) / dz  # \partial_3 (Z)
+    
+    # 2. Метрика Минковского g_{\mu\nu} с сигнатурой (+---) как базис Нулевой Энергии
+    g_metric = np.array([1.0, -1.0, -1.0, -1.0])
+    
+    # 3. Вычисление кинетического инварианта X = g^{\mu\nu} \partial_\mu \theta \partial_\nu \theta
+    X_invariant = np.zeros(shape)
+    for mu in range(4):
+        # Поднимаем индекс: d^\mu \theta = g^{\mu\nu} \partial_\nu \theta
+        d_theta_up = g_metric[mu] * d_theta[mu]
+        X_invariant += d_theta[mu] * d_theta_up
+        
+    # 4. Нелинейный Лагранжиан ЕТВП v8.2: L = 0.5*X - 4*\pi^4 * \kappa * X^2
+    nl_coeff = 4.0 * (np.pi ** 4) * kappa_derived
+    L_lagrangian = 0.5 * X_invariant - nl_coeff * (X_invariant ** 2)
+    
+    # Производная Лагранжиана по инварианту X: L_X = \partial L / \partial X
+    L_X = 0.5 - 2.0 * nl_coeff * X_invariant
+    
+    # 5. Сборка ковариантного тензора Гильберта: T_{\mu\nu} = L_X * \partial_\mu \theta * \partial_\nu \theta - g_{\mu\nu} * L
+    for mu in range(4):
+        for nu in range(4):
+            # Кинетическое натяжение фазы
+            kinetic_stress = L_X * d_theta[mu] * d_theta[nu]
+            
+            # Метрическое давление вакуума
+            metric_pressure = g_metric[mu] * L_lagrangian if mu == nu else 0.0
+            
+            # Итоговый компонент тензора энергии-импульса
+            T_tensor[mu, nu] = kinetic_stress - metric_pressure
+            
+    return T_tensor  # Возвращает полную матрицу 4x4 натяжений поля
