@@ -490,3 +490,46 @@ if __name__ == "__main__":
     print(f"Максимальное натяжение поля (Инвариант X): {max_x:.6e}")
     print(f"Средняя плотность энергии в узле T_00: {avg_t00:.6f}")
     print(f"ВЫВЕДЕННАЯ МАССА СОЛИТОНА (Геометрический объем): {mass:.6f}")
+
+---
+
+def compute_field_tensor_T_mu_nu(self, theta_field, dt, dx, dy, dz):
+        """
+        Явное вычисление тензора энергии-импульса T_mu_nu 
+        для демонстрации преемственности с ОТО Эйнштейна в рамках ЕТВП v8.2.
+        """
+        shape = theta_field.shape
+        T = np.zeros((4, 4) + shape)
+        
+        # 1. Получаем беспараметрический коэффициент нелинейности из геометрии 11D
+        # Больше никакой ручной подгонки kappa!
+        derived_kappa = 1.0 / (self.Phi ** 4) 
+        nl_coeff = 4.0 * (self.pi ** 4) * derived_kappa
+        
+        # 2. Вычисляем 4-градиенты фазы d_mu_theta (ковариантные производные)
+        d_theta = np.zeros((4,) + shape)
+        d_theta[0] = np.gradient(theta_field, axis=0) / dt  # Временная компонента
+        d_theta[1] = np.gradient(theta_field, axis=1) / dx  # X
+        d_theta[2] = np.gradient(theta_field, axis=2) / dy  # Y
+        d_theta[3] = np.gradient(theta_field, axis=3) / dz  # Z
+        
+        # Сигнатура Минковского (+---) в качестве подложки Нулевой Энергии
+        g_eta = np.array([1.0, -1.0, -1.0, -1.0])
+        
+        # 3. Кинетический инвариант X = (d_mu theta) * (d^mu theta)
+        X = np.zeros(shape)
+        for mu in range(4):
+            X += d_theta[mu] * (g_eta[mu] * d_theta[mu])
+            
+        # 4. Безразмерный Лагранжиан ЕТВП и его производная по инварианту L_X
+        L = 0.5 * X - nl_coeff * (X ** 2)
+        L_X = 0.5 - 2.0 * nl_coeff * X
+        
+        # 5. Сборка тензора T_mu_nu: T_mu_nu = L_X * d_mu * d_nu - g_mu_nu * L
+        for mu in range(4):
+            for nu in range(4):
+                kin_term = L_X * d_theta[mu] * d_theta[nu]
+                metric_term = g_eta[mu] * L if mu == nu else 0.0
+                T[mu, nu] = kin_term - metric_term
+                
+        return T
