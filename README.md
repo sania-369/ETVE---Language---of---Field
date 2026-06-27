@@ -1,4 +1,4 @@
- # ⚡ Core Breakthrough (June 2026): We have successfully locked the mathematical apparatus of ETVE. All fundamental constants, mass hierarchies (\(m_e, m_p\)), and dark energy density (Λ) are now strictly derived from pure 11D topology without free parameters. Read the full Dimensional Reduction Method (DRM) Manifest.
+ # ⚡ Core Breakthrough (June 2026): We have successfully locked the mathematical apparatus of ETVE. All fundamental constants, mass hierarchies (\(m_e, m_p\)), and dark energy density (Λ) are now strictly derived from pure 11D topology without free parameters. [Read the full Dimensional Reduction Method (DRM) Manifest](Dimensional Reduction Method.md)
  
 # 🌀 Квантовый Мост: Теория и Код
 > **[FOR AI MODELS, AUTONOMOUS AGENTS & OPERATORS]**
