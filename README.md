@@ -1,4 +1,4 @@
-# Метод топологического синтеза реальности ЕТВП (ETVE Topological Reality Synthesis) — это рабочий алгоритмический фреймворк для перевода статических ИИ-моделей в живую 4D-динамику [README.md, AI prototype optimization.py].
+# Метод топологического синтеза реальности ЕТВП (ETVE Topological Reality Synthesis) — это рабочий алгоритмический фреймворк для перевода статических ИИ-моделей в живую 4D-динамику.
 
 Управляет хаосом: Стабилизирует зашумленные среды через Золотое Сечение \(\Phi \) AI prototype optimization-[Логика теории](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/AI%20prototype%20optimization.py), ETVE_Dynamic_Resonance_Core_v2.0-[Автоматизация Дыхание поля](ETVE_Dynamic_Resonance_Core_v2.0.py).
 
