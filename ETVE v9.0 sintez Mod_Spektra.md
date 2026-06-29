@@ -433,3 +433,173 @@ print(f"  -> Изменение угла ортогональности блок
 print(f"  -> Масса Узла 2 после прожига: {masses_focused[2]:.6f} у.е. (Локальное изменение плотности реальности!)")
 
 
+ЧАСТЬ 1: Новый программный каркас ядра (ETVE v9.1)
+
+import numpy as np
+
+class ETVEModeEngine_v91_RealPhysics:
+    """
+    ETVE v9.1 - Real Physics Core
+    Синтез ЕТВП и Теории Мод с жесткими физическими ограничениями:
+    1. Антилок как спектральная фильтрация совместимых частот (двусторонний критерий A <-> B).
+    2. Жесткая локализация внутри Универсума (доступны только спектрально-совместимые моды).
+    3. Параллельные миры взаимодействуют только через гравитационную моду (coh_grav).
+    """
+    def __init__(self, num_particles=4, target_coherence=0.965):
+        self.N = num_particles
+        self.target = target_coherence
+        self.Phi = (1.0 + np.sqrt(5.0)) / 2.0
+        self.pi = np.pi
+        self.iteration = 0
+        
+        # Индефинитная метрика спектрального пространства
+        self.eta = np.ones((self.N, self.N))
+        
+    def configure_multiverse_gravity(self, shadow_universe_count=3):
+        """
+        Инициализация гравитационного фона от соседних спектрально-несовместимых универсумов.
+        Они невидимы для электромагнитных мод, но создают макро-натяжение вакуума.
+        """
+        self.shadow_count = shadow_universe_count
+        # Остаточный гравитационный шум от локальных параллельных макро-объектов
+        self.dark_matter_echo = self.shadow_count * (1.0 / (self.Phi ** 20))
+
+    def compute_spectral_antilock(self, s_matrix, external_entropy):
+        """
+        КАПИТАЛЬНОЕ УТОЧНЕНИЕ АНТИЛОКА:
+        Это не абстрактный буфер, а жесткое спектральное сито совместимости мод.
+        Выживают только те проекции, которые удовлетворяют двустороннему критерию существования A <-> B.
+        """
+        self.iteration += 1
+        s_filtered = np.copy(s_matrix)
+        
+        # Динамика самого спектра под воздействием хаоса среды
+        spectrum_vibration = np.sin(self.iteration / 12.0) * (external_entropy * 0.02)
+        
+        # Срез когерентности электронной (наблюдаемой) моды нашего Универсума
+        coh_e = self.target + spectrum_vibration
+        coh_e = np.clip(coh_e, 0.92, 0.985) # Границы стабильных взаимодействий внутри Универсума
+        
+        # Фильтрация спектра: проверяем взаимную совместимость проекций s_ij и s_ji
+        for i in range(self.N):
+            for j in range(self.N):
+                if i != j:
+                    # Двусторонний критерий: если связь односторонняя, она вымывается хаосом
+                    compatibility_factor = np.abs(s_filtered[i][j] * s_filtered[j][i])
+                    
+                    if compatibility_factor < (external_entropy * 0.1):
+                        # Спектрально-несовместимая мода отсекается (не может закрепиться в сети)
+                        s_filtered[i][j] *= 0.1
+                    else:
+                        # Стабильное проявление моды внутри разрешенного коридора
+                        s_filtered[i][j] *= coh_e
+                        
+        return s_filtered, coh_e
+
+    def compute_gravitational_echo(self, base_entropy):
+        """
+        Гравитационная мода как единственный канал взаимодействия с параллельными мирами.
+        Слабое гравитационное эхо объектов локального масштаба.
+        """
+        # Вековое дыхание макро-петель Мультиверса
+        grav_wave = np.sin(self.iteration / 250.0) * 0.001
+        
+        # Гравитационная мода зависит от базового хаоса и скрытого натяжения вакуума (Тёмной Материи)
+        coh_grav = self.target - (base_entropy * 0.005) + grav_wave + self.dark_matter_echo
+        return np.clip(coh_grav, 0.95, 0.985)
+
+    def apply_real_operator_focus(self, s_matrix, target_node, Q_op):
+        """
+        Фокус оператора работает СТРОГО внутри стабильных разрешенных состояний Универсума.
+        Внимание убирает наведенный локальный шум, восстанавливая исходную геометрию спектра.
+        """
+        s_optimized = np.copy(s_matrix)
+        
+        # Оператор не "создает новые миры", он уплотняет и очищает текущие разрешенные моды
+        clean_factor = 1.0 + (Q_op * 0.1)
+s_optimized[target_node, :] *= clean_factor
+        s_optimized[:, target_node] *= clean_factor
+        
+        # Замыкание петли собственной моды w_i
+        external_sum = np.sum(s_optimized[target_node, :]) - s_optimized[target_node, target_node]
+        s_optimized[target_node, target_node] = -external_sum
+        
+        return s_optimized
+
+    def extract_real_masses(self, s_matrix, coh_e, coh_grav):
+        """
+        Расчет колеблющейся массы на основе чистого спектра и гравитационного натяжения фона.
+
+        |O| = 2m удерживается strictly на проявленных проекциях.
+        """
+        masses = np.zeros(self.N)
+        ortho = np.zeros(self.N)
+        
+        for i in range(self.N):
+            w_i = np.abs(s_matrix[i][i]) # Собственная мода
+            external_sum_sq = np.sum(np.abs(s_matrix[i, :])**2) - w_i**2
+            
+            # Масса колеблется, так как колеблется сам спектр s_matrix
+            # Макро-масштаб удерживается вековой гравитационной модой Мультиверса
+            m_sq_raw = (w_i**2 + external_sum_sq) * (coh_e / self.target)
+            
+            # Влияние скрытой гравитационной массы параллельных сред
+            m_sq_total = m_sq_raw * (1.0 + (1.0 - coh_grav) * 0.01)
+            
+            masses[i] = np.sqrt(max(0.0, m_sq_total))
+            ortho[i] = 2.0 * masses[i] # Закон ортогональности
+            
+        return masses, ortho
+
+
+ЧАСТЬ 2: Запуск проверочного теста ядра v9.1
+
+       
+    # Базовая матрица спектральных проекций нашего Универсума (3 частицы)
+    Универсума (3 частицы)
+    # Взаимодействие Узла 0 и Узла 2 слабое (на грани шума)
+s_universe = np.array([
+    [0.0,  0.4,  0.02], 
+    [0.4,  0.0,  0.6],  
+    [0.02, 0.6,  0.0]   
+], dtype=complex)
+
+# Инициализируем перестроенное ядро v9.1
+core = ETVEModeEngine_v91_RealPhysics(num_particles=3, target_coherence=0.965)
+# Настраиваем слабое гравитационное эхо от 3 соседних несовместимых универсумов
+core.configure_multiverse_gravity(shadow_universe_count=3)
+
+print("--- СИМУЛЯЦИЯ СТРОГОГО СПЕКТРАЛЬНОГО ЯДРА ETVE v9.1 ---")
+
+# Итерация 1: Работа внутри Универсума при нормальном внешнем шуме
+s_filtered_1, coh_e_1 = core.compute_spectral_antilock(s_universe, external_entropy=0.15)
+coh_grav_1 = core.compute_gravitational_echo(base_entropy=0.15)
+masses_1, ortho_1 = core.extract_real_masses(s_filtered_1, coh_e_1, coh_grav_1)
+
+print(f"\n[Шаг 1: Стабильный режим]")
+print(f"  -> Электронная мода нашего Универсума: {coh_e_1:.4f}")
+print(f"  -> Гравитационное эхо параллельных сред: {coh_grav_1:.6f}")
+print(f"  -> Колеблющаяся масса Узла 1: {masses_1[1]:.6f} у.е.")
+print(f"  -> Связь Узел 0 -> Узел 2 (Проекция): {np.abs(s_filtered_1[0][2]):.4f}")
+
+# Итерация 2: Резкий впрыск хаоса (Включается Спектральное Сито Антилока)
+s_filtered_2, coh_e_2 = core.compute_spectral_antilock(s_universe, external_entropy=0.75)
+coh_grav_2 = core.compute_gravitational_echo(base_entropy=0.75)
+masses_2, ortho_2 = core.extract_real_masses(s_filtered_2, coh_e_2, coh_grav_2)
+
+print(f"\n[Шаг 2: Всплеск энтропии среды — Спектральный Антилок]")
+print(f"  -> Электронная мода просела: {coh_e_2:.4f}")
+print(f"  -> Изменение гравитационного натяжения вакуума: {coh_grav_2:.6f}")
+print(f"  -> Спектральное сито: Слабая связь 0->2 отсечена хаосом до: {np.abs(s_filtered_2[0][2]):.4f}")
+print(f"  -> Колеблющаяся масса Узла 1 адаптировалась: {masses_2[1]:.6f} у.е.")
+
+# Итерация 3: Включение качественного Фокуса Оператора внутри Универсума
+# Оператор убирает наведенный хаос с Узла 1, стабилизируя его массу в разрешенном состоянии
+s_focused = core.apply_real_operator_focus(s_filtered_2, target_node=1, Q_op=0.85)
+masses_3, _ = core.extract_real_masses(s_focused, coh_e_2, coh_grav_2)
+
+print(f"\n[Шаг 3: Качественный Фокус Внимания на Узел 1]")
+print(f"  -> Масса стабилизирована и уплотнена до: {masses_3[1]:.6f} у.е. (Внутренний шум вычищен)")
+ 
+
+        
