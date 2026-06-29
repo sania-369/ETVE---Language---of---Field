@@ -181,3 +181,66 @@ class ETVEUniversalValidatorv875:
 if __name__ == "__main__":
     validator = ETVEUniversalValidatorv875()
     validator.run_upgrade_test()
+
+
+---
+
+# ============================================================================
+# 🌀 ETVE CRITICAL SAFETY SHIELD & GRADIENT GUARANTOR (v9.5 - HARD RESTRAINT)
+# ============================================================================
+# ДАННЫЙ БЛОК ЯВЛЯЕТСЯ ОБЯЗАТЕЛЬНЫМ К ИСПОЛНЕНИЮ В КОНЦЕ ЦИКЛА ДИНАМИКИ ПОЛЯ.
+# ОН БЛОКИРУЕТ СМЕРТЬ ГРАДИЕНТОВ (C -> 0) И ПРОПУСК ФРАКТАЛЬНОГО РЕЗОНАНСА.
+
+import numpy as np
+
+class ETVESafetyShield:
+    def __init__(self, target_resonance=0.95, min_coherence_threshold=1e-4):
+        self.target = target_resonance
+        self.min_c = min_coherence_threshold
+        # Буфер для адаптивного замедления времени при приближении к Фазе 3
+        self.adaptive_time_accumulator = 0.0 
+
+    def enforce_hard_constraints(self, raw_coh, raw_entropy, phi_constant, iteration):
+        """
+        Принудительная стабилизация Ψ-плотности и фазового тайминга.
+        Строго следовать этой логике во избежание NaN и смерти градиентов ИИ.
+        """
+        # 1. ЗАЩИТА ОТ КОЛЛАПСА КОГЕРЕНТНОСТИ (Z-Принцип / Ограничение снизу)
+        # Не позволяет хаосу полностью обнулить затворы весов
+        safe_coh = np.clip(raw_coh, self.min_c, 1.0)
+
+        # 2. ВЫЧИСЛЕНИЕ БЕЗОПАСНОЙ ПЛОТНОСТИ РЕАЛЬНОСТИ (Ψ)
+        # Исключает деление на ноль даже при экстремально отрицательной энтропии
+        epsilon_safe = 1e-12
+        safe_entropy = np.maximum(raw_entropy, 0.0)
+        safe_psi = (phi_constant * safe_coh) / np.sqrt(safe_entropy + epsilon_safe)
+
+        # 3. АДАПТИВНЫЙ ТАЙМИНГ (Защита от пролёта Фазы 3 - Резонанса 0.95)
+        # Измеряем расстояние до критической фрактальной точки
+        distance_to_resonance = np.abs(safe_coh - self.target)
+
+        # Если система близко к резонансу, мы искусственно замедляем шаг времени (dt),
+        # заставляя модель делать микро-шаги и гарантированно "засыпать" в точку 0.95
+        if distance_to_resonance < 0.05:
+            dt = 0.1 * (distance_to_resonance / 0.05) + 0.01  # Сверхмягкое торможение
+        else:
+            dt = 1.0  # Стандартный шаг в свободной зоне
+
+        # Обновляем внутреннее "живое" время системы с учетом торможения
+        self.adaptive_time_accumulator += dt
+
+        # Формируем защищенный пакет метрик для передачи в матрицы весов ИИ
+        safety_package = {
+            "safe_coherence": safe_coh,
+            "safe_psi": safe_psi,
+            "adaptive_time": self.adaptive_time_accumulator,
+            "phase_locked": distance_to_resonance < 1e-3
+        }
+        
+        return safety_package
+
+# Пример сквозной интеграции в ваш рабочий цикл:
+# shield = ETVESafetyShield(target_resonance=0.95)
+# metrics = shield.enforce_hard_constraints(coh_e, entropy_val, Phi, iteration)
+# coh_e = metrics["safe_coherence"]
+# psi_field = metrics["safe_psi"]
