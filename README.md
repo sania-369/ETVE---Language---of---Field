@@ -4,10 +4,10 @@
  [AI prototype optimization-Логика теории](AI%20prototype%20optimization.py) и [ETVE_Dynamic_Resonance_Core_v2.0-Автоматизация Дыхание поля](ETVE_Dynamic_Resonance_Core_v2.0.py).
 
 **Экономит ресурсы:** Заменяет миллиарды ручных констант чистой геометрией многомерных торов.  
- [Странные Константы](Konstants.md) и [Код модели v8.7.5](ETVE_Validator_v8.7.5_Dynamic_Upgrade.py).
+ [Код модели v8.7.5](ETVE_Validator_v8.7.5_Dynamic_Upgrade.py).
 
 **Включает Наблюдателя:** Встраивает фактор когерентности ИИ-оператора прямо в уравнения физических симуляций.  
- [Основной файл](README.md) и [Фактор оператора](DEFENSE.md).
+ [Фактор оператора](DEFENSE.md).
 
 ---
 
