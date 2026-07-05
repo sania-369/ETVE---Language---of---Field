@@ -1,0 +1,122 @@
+🧬 РУКОВОДСТВО ПО ИНТЕГРАЦИИ (INTEGRATION GUIDE): ETVE CORE v12.2Данный документ описывает процесс подключения комплексного нелинейного ядра стабилизации ETVPCore122 в качестве внешнего алгоритмического плагина (фильтра/автопилота) для управления зашумленными средами.📦 1. Подготовка окружения и базовый классЯдро полностью автономно и требует только наличия библиотеки numpy. Создайте файл etve_core.py и поместите туда оптимизированный код исполнительного модуля:
+
+import numpy as np
+
+class ETVPCore122:
+    def __init__(self, target_coherence=0.965):
+        # 1. Фундаментальные топологические константы
+        self.Phi = (1.0 + np.sqrt(5.0)) / 2.0
+        self.C_min = 1.0 / (self.Phi ** 10)  # ~0.0081
+        self.C_max = 1.0 - 1.0 / (self.Phi ** 20)  # ~0.9999
+        self.C_target = target_coherence
+        
+        # Начальное состояние когерентности оператора управления
+        self.C = self.C_target
+        
+        # 2. Жесткая матрица Картана E8 (базис 8x8)
+        self.C_E8 = np.array([
+            [ 2, -1,  0,  0,  0,  0,  0,  0],
+            [-1,  2, -1,  0,  0,  0,  0,  0],
+            [ 0, -1,  2, -1,  0,  0,  0,  0],
+            [ 0,  0, -1,  2, -1,  0,  0,  0],
+            [ 0,  0,  0, -1,  2, -1,  0, -1],
+            [ 0,  0,  0,  0, -1,  2, -1,  0],
+            [ 0,  0,  0,  0,  0, -1,  2,  0],
+            [ 0,  0,  0,  0, -1,  0,  0,  2]
+        ], dtype=float)
+
+    def _apply_tanh_damping(self, C_raw):
+        """ Гиперболический тангенциальный демпфер v12.2 вместо жесткого clip """
+        E = (C_raw - self.C_min) / (self.C_max - self.C_min)
+        E_limited = np.tanh(E) * 0.5 + 0.5
+        return self.C_min + E_limited * (self.C_max - self.C_min)
+
+    def _compute_e8_spectrum(self):
+        """ Сборка деформированной 11D комплексной матрицы и расчет спектра """
+        M_11 = np.zeros((11, 11), dtype=complex)
+        
+        # Деформация базовой структуры E8 относительно отклонения от таргета
+        M_base = self.C_E8.copy() * (1.0 + 0.1 * (self.C - self.C_target))
+        
+        # Поворот собственных векторов
+        eigenvals, eigenvectors = np.linalg.eigh(M_base)
+        mass_direction = eigenvectors[:, np.argmin(eigenvals)]
+        
+        for i in range(8):
+            projection = np.dot(eigenvectors[:, i], mass_direction)
+            M_base[i, i] += abs(projection) * (self.C_max - self.C) / (self.C_max - self.C_min)
+            
+        M_11[0:8, 0:8] = M_base.astype(complex)
+        for i in range(8, 11):
+            M_11[i, i] = self.C * 0.1
+            
+        # Расчет комплексной фазы сдвига поля
+        phi = (np.pi / 2.0) * (1.0 - (self.C - self.C_min) / (self.C_max - self.C_min))
+        M_complex = M_11.real + 1j * (M_11.real * np.tan(phi))
+        
+        # Извлечение спектра собственных значений через np.linalg.eigvals
+        eigenvalues = np.linalg.eigvals(M_complex)
+        return eigenvalues[np.argsort(np.abs(eigenvalues))[::-1]]
+
+    def process_step(self, entropy_flux, input_signal, input_noise):
+        """
+        Основной итерационный шаг контура управления.
+        entropy_flux: текущая амплитуда хаоса среды (0.0 - 1.0)
+        input_signal: чистый вектор/параметр системы
+        input_noise: вектор зашумления / аномалия
+        """
+        # Модуляция когерентности под ударом внешнего потока
+        chaos_operator = 1.0 / (1.0 + abs(entropy_flux) * (1.0 / self.Phi))
+        self.C = self.C * chaos_operator + (1.0 - chaos_operator) * self.C_min
+        
+        # Стабилизация через tanh-демпфер
+        self.C = self._apply_tanh_damping(self.C)
+        
+        # Расчет комплексного шага времени dt из спектра E8
+        spectrum = self._compute_e8_spectrum()
+        dt_complex = spectrum[10] / spectrum[0]
+        dt_real = float(np.real(dt_complex))
+        
+        # Квантование выходного сигнала по формуле динамического баланса
+        output_data = (input_signal * self.C) + (input_noise * (1.0 - self.C))
+        
+        return output_data, self.C, dt_real
+
+
+🛠️ 2. Паттерны интеграции в сторонний кодВариант А: Защита нейросетей от градиентных взрывов (NaN/Inf)Встраивается непосредственно в цикл обучения перед шагом оптимизатора (optimizer.step()), выполняя роль нелинейного сглаживающего фильтра для тензоров градиентов.
+
+
+from etve_core import ETVPCore122
+import torch  # Пример для PyTorch проекта
+
+# Инициализация плагина v12.2
+etve_filter = ETVPCore122()
+
+def train_step(model, inputs, targets, optimizer):
+    optimizer.zero_grad()
+    outputs = model(inputs)
+    loss = criterion(outputs, targets)
+    loss.backward()
+    
+    # --- КАНАЛ ИНТЕГРАЦИИ ETVE v12.2 ---
+    for param in model.parameters():
+        if param.grad is not None:
+            # Извлекаем среднюю энтропию (хаос) текущего градиента
+            entropy_flux = float(torch.std(param.grad).item())
+            
+            # Конвертируем тензор в numpy для обработки ядром
+            grad_np = param.grad.cpu().numpy()
+            clean_base = np.median(grad_np)
+            
+            # Прогоняем через стабилизатор v12.2
+            stabilized_grad, current_C, dt = etve_filter.process_step(
+                entropy_flux=entropy_flux, 
+                input_signal=clean_base, 
+                input_noise=grad_np
+            )
+            
+            # Возвращаем очищенный тензор обратно в граф вычислений
+            param.grad = torch.tensor(stabilized_grad, dtype=param.grad.dtype).to(param.grad.device)
+    # -----------------------------------
+    
+    optimizer.step()
