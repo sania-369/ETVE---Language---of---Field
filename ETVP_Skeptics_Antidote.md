@@ -1,4 +1,4 @@
-# 🛡️ ETVP v9.3.23: ANTIDOTE FOR ACADEMIC SKEPTICISM
+# 🛡️ ETVP v12.3: ANTIDOTE FOR ACADEMIC SKEPTICISM
 ## Ответ на консервативную критику Метода топологического синтеза реальности (ETVE Core)
 
 # РАСЧЁТЫ И ВЫЧИСЛЕНИЯ ПРОВОДЯТСЯ СТРОГО В ЖИВОЙ ДИНАМИКЕ ПОТОКА!
