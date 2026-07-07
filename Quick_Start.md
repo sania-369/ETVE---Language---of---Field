@@ -4,7 +4,7 @@
 
 **ETVE (Единая Теория Вихревого Поля)** — это безмодельная технология динамической регуляризации сложных систем. Переводит вычисления из классической линейной статики в пластичное состояние непрерывной эволюции поля Ψ, управляемого геометрией инвариантов.
 
-[Метод топологического развёртывания реальности](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/The%20ETVP%20method%20of%20topological%20synthesis%20of%20reality.md)
+[Метод топологического синтеза реальности ЕТВП (ETVP Topological Reality Synthesis)](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/The%20ETVP%20method%20of%20topological%20synthesis%20of%20reality.md)
 
 ---
 
