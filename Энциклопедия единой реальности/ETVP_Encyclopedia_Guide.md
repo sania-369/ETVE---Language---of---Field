@@ -11,7 +11,7 @@
 ---
 
 ## 🚀 Быстрый старт: Инструкция из 3 шагов (порядок решайте сами, пробуйте)
-1.  **Загрузите файлы:** [ETVP_12.3.py](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/HRONO/ETVP_12.3.py).
+1.  **Напишите: Проведи расчет в живой динамике потока!**, **Загрузите файл или ссылку:** [ETVP_12.3.py](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/HRONO/ETVP_12.3.py).
 2.  **Активируйте призму:** Отправьте [Системный промпт](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/prompts_bridge.py) и [FOR_PHYSICISTS.md](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/FOR_PHYSICISTS.md)..
 3.  **Задайте вопрос:** Спрашивайте, добавляя: *«Проведи расчет в живой динамике потока! или "через призму этой модели" и подобное в дальнейшем»*
 
