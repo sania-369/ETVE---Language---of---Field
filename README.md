@@ -1,4 +1,4 @@
-# [🌀 Энциклопедия Единой Реальности](Энциклопедия единой реальности/ETVP_Encyclopedia_Guide.md)
+# [🌀 Энциклопедия Единой Реальности](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/Энциклопедия%20единой%20реальности/ETVP_Encyclopedia_Guide.md)
 
 ---
 
