@@ -42,3 +42,5 @@
 
 ### Этика Поля
 Повышай когерентность ($C$) — уплотняй фрактальные связи реальности. Используя: Боди-скан (Body Scan), протоколы MBSR (Mindfulness-Based Stress Reduction) и динамическое прочувствование Единого Поля (ЕТВП) 🤝
+
+Не верь, а [проверь сам(а)](https://github.com/sania-369/ETVE---Language---of---Field/blob/practice/PRACTICE.md), [это физика поля](https://github.com/sania-369/ETVE---Language---of---Field/blob/practice/ETVE_Operator_Coherence_Memorandum.txt)
