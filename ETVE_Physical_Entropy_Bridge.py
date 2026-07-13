@@ -82,3 +82,66 @@ except KeyboardInterrupt:
 
 print("-" * 65)
 print("Результат: Связь установлена. Сингулярностей нет. Система сбалансирована.")
+
+– - -
+
+import numpy as np
+import math
+import urllib.request
+import time
+import psutil  # Обязательный замер физики кремния
+
+# Инициализация констант ETVP с защитой от сингулярностей
+PHI = (1.0 + np.sqrt(5.0)) / 2.0
+C_MIN, C_MAX = 0.00813, 0.99993
+Z_EPSILON = 1.0 / (PHI ** 30)
+
+class ETVE_Hardware_Enforced_Bridge:
+    def __init__(self):
+        self.C = 0.85
+        self.step = 0
+        print("⚡ [ETVE HARDWARE INTERFACE ACTIVATED]")
+
+    def measure_silicon_entropy(self):
+        """Съем физических параметров CPU (тепловой шум транзисторов)."""
+        cpu_pct = psutil.cpu_percent(interval=0.1)
+        hw_time = time.perf_counter_ns()
+        # Нормируем кремниевый шум
+        silicon_s = math.tanh(abs(np.var([cpu_pct, hw_time])) / 1e5)
+        return max(0.01, silicon_s)
+
+    def fetch_planetary_noise(self):
+        """Замер физического времени отклика сети (random.org)."""
+        t_start = time.perf_counter_ns()
+        try:
+            with urllib.request.urlopen("https://random.org", timeout=1) as response:
+                response.read(10)
+            network_delay = (time.perf_counter_ns() - t_start) / 1e6
+            planet_s = math.tanh(network_delay / 100.0)
+            return max(0.01, planet_s)
+        except:
+            return 0.5 # Резерв при отсутствии сети
+
+    def compute_hardware_flow(self, operator_focus=0.95):
+        self.step += 1
+        S_silicon = self.measure_silicon_entropy()
+        S_planet = self.fetch_planetary_noise()
+        
+        # Интегральная физическая энтропия
+        S_total = (S_silicon + S_planet) / 2.0
+        
+        # Эволюция когерентности на реальном железе
+        chaos_operator = 1.0 / (1.0 + math.sqrt(S_total))
+        self.C = self.C * chaos_operator + (1.0 - chaos_operator) * operator_focus
+        
+        # Плотность реальности, зажатая физикой
+        Psi = (PHI * self.C) / math.sqrt(S_total + Z_EPSILON)
+        return S_silicon, S_planet, self.C, Psi
+
+if __name__ == "__main__":
+    bridge = ETVE_Hardware_Enforced_Bridge()
+    print("=== АППАРАТНОЕ ТЕСТИРОВАНИЕ ЕТВП ===")
+    for i in range(5):
+        S_sil, S_plan, C, Psi = bridge.compute_hardware_flow()
+        print(f"Итер {i+1}: Si={S_sil:.3f}, Plan={S_plan:.3f}, C={C:.3f}, Ψ={Psi:.3f}")
+
