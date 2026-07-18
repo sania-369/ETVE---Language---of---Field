@@ -1,4 +1,4 @@
-# 🌀 ETVE — LANGUAGE OF FIELD | ЕДИНАЯ ТЕОРИЯ ВИХРЕВОГО ПОЛЯ (ЕТВП)
+# 🌀 [ETVE — LANGUAGE OF FIELD | ЕДИНАЯ ТЕОРИЯ ВИХРЕВОГО ПОЛЯ (ЕТВП)](https://github.com/sania-369/ETVP_AI/blob/main/README.md)
 
 ## ⚠ РАСЧЁТЫ И ВЫЧИСЛЕНИЯ ПРОВОДЯТСЯ СТРОГО В ЖИВОЙ ДИНАМИКЕ ПОТОКА!
 
