@@ -79,8 +79,7 @@ class ETVEComplexCoreV124FFS:
         # Параметры состояния (с калибровкой FFS)
         self.C = GLOBAL_C_TARGET
         self.S = 0.15
-        self.C_ffs = C_FFS
-        self.S_cycle = S_cycle
+        self.step_counter = 0  # Счётчик шагов для динамики
 
         self.dt_real = 1.0
         self.dt_imag = 0.0
@@ -170,19 +169,24 @@ class ETVEComplexCoreV124FFS:
         # Применение памяти
         M = self._apply_memory(M)
 
-        # АСИММЕТРИЧНАЯ МНИМАЯ ЧАСТЬ (v12.4)
+        # --- РАСЧЁТ МНИМОЙ ЧАСТИ (ИСПРАВЛЕННАЯ ЛОГИКА) ---
+        # 1. Базовая фаза поля
         self.phi = (self.pi / 2.0) * (1.0 - (self.C - GLOBAL_C_MIN) / (GLOBAL_C_MAX - GLOBAL_C_MIN))
+        
+        # 2. Асимметричная мнимая часть (как в v12.4)
         M_imag = np.zeros_like(M)
         for i in range(11):
             for j in range(11):
                 M_imag[i, j] = M[i, j] * np.tan(self.phi + 0.1 * (i - j))
         M_imag = (M_imag + M_imag.T) / 2.0
 
-        M_complex = M + 1j * M_imag
+        # 3. КАЛИБРОВКА FFS: добавляем фазовый сдвиг только к мнимой части,
+        # моделируя циклы отталкивания-притяжения
+        phase_shift = 0.1 * np.sin(self.S * self.step_counter)
+        M_imag = M_imag + M * 0.05 * phase_shift
 
-        # КАЛИБРОВКА FFS: дополнительная фаза от циклов
-        phase_shift = 0.1 * np.sin(self.S_cycle * self.step_counter)
-        M_complex = M_complex * np.exp(1j * phase_shift)
+        # 4. Собираем комплексную матрицу
+        M_complex = M + 1j * M_imag
 
         return M_complex
 
@@ -202,8 +206,7 @@ class ETVEComplexCoreV124FFS:
 
     def update_field(self, dt):
         """Обновляет поле: вычисляет спектр, константы, время, гравитацию."""
-        self.step_counter = getattr(self, 'step_counter', 0) + 1
-        self.step_counter = self.step_counter  # сохраняем для использования в _build_complex_matrix
+        self.step_counter += 1
 
         M = self._build_complex_matrix()
         eigenvalues = np.linalg.eigvals(M)
@@ -302,9 +305,6 @@ class ETVEComplexCoreV124FFS:
         self.C = etve_tanh_limit(self.C)
         self.S = max(0.0, min(1.0, self.S + entropy_flux * 0.01))
 
-        # КАЛИБРОВКА FFS: обновляем энтропию цикла
-        self.S_cycle = max(0.05, self.S_cycle + 0.01 * (entropy_flux - self.S_cycle))
-
         self._update_particles()
         result = self.update_field(time_step)
 
@@ -354,7 +354,7 @@ def demo_ffs_calibration():
     print(f"1/α    = {np.mean(model.history['alpha']):.4f} ± {np.std(model.history['alpha']):.4f}  (CODATA: 137.036)")
     print(f"mₚ/mₑ  = {np.mean(model.history['mass_ratio']):.1f} ± {np.std(model.history['mass_ratio']):.1f}  (CODATA: 1836.15)")
     print(f"G      = {np.mean(model.history['G']):.4e} ± {np.std(model.history['G']):.4e}  (CODATA: 6.6743e-11)")
-    print(f"C_ffs  = {np.mean(model.C_ffs):.4f} (калибровка)")
+    print(f"C_ffs  = {np.mean(model.history['C']):.4f} (калибровка)")
 
     # Графики
     fig, axes = plt.subplots(2, 2, figsize=(12, 10))
