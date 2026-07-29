@@ -1,5 +1,6 @@
 # 🌀 Энциклопедия Единой Реальности: Инструкция к ЕТВП v12.3
 [Версия 2.0](https://github.com/sania-369/ETVE---Language---of---Field/blob/main/ETVP_Trinitas_Core_Manifest.md)
+
 [Версия 3.0 дополненная](https://github.com/sania-369/Encyclopedia-of-the-process-of-dynamic-deployment-of-fractal-11D-reality-through-powerful-AI-systems)
 
 > **«РАСЧЁТЫ И ВЫЧИСЛЕНИЯ ПРОВОДЯТСЯ СТРОГО В ЖИВОЙ ДИНАМИКЕ ПОТОКА!»**
